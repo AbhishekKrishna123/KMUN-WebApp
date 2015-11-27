@@ -123,6 +123,14 @@
 				width: 300px;
 				margin: auto;
 			}
+			#autocomplete-gsl {
+				width: 300px;
+				text-align: center;
+			}
+			#autocomplete-gsl-div {
+				width: 300px;
+				margin: auto;
+			}
 			.autocomplete-suggestions { 
 				width: 300px;
 				border: 1px solid #cccccc;
@@ -379,15 +387,12 @@
 		<div class="ms-Grid hidden" id="tab-gsl">
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12">
-					<div>
-						<p class="ms-font-s ms-fontColor-neutralSecondary">Select speakers</p>
-					</div>
-					<div class="ms-SearchBox">
-						<input class="ms-SearchBox-field">
-						<label class="ms-SearchBox-label"><i class="ms-SearchBox-icon ms-Icon ms-Icon--search"></i>Select delegate</label>
-						<button class="ms-SearchBox-closeButton"><i class="ms-Icon ms-Icon--x"></i></button>
+					<div class="ms-TextField ms-TextField--underlined" id="autocomplete-gsl-div">
+						<label class="ms-Label">Add&nbsp;speaker&nbsp;</label>
+						<input class="ms-TextField-field" type="text" id="autocomplete-gsl" style="color: #0078D7;">
 					</div>
 				</div>
+				
 				<div class="ms-Grid-col ms-u-sm12">
 					<div class="ms-Grid-col ms-u-sm12">
 						<button class="ms-Button ms-Button--primary">
@@ -424,17 +429,26 @@
 			</div>
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm6">
+					<div class="ms-TextField ms-TextField--underlined" id="autocomplete-mod-speaker-div">
+						<label class="ms-Label">Current&nbsp;speaker</label>
+						<input class="ms-TextField-field" type="text" id="autocomplete-mod-speaker" style="color: #0078D7;">
+					</div>
+					<button class="ms-Button ms-Button--primary" style="margin-top: 1em" onclick="modSpeakerReset()">
+						<span class="ms-Button-label">Reset Speaker Time</span>
+					</button>
+				</div>
+				<div class="ms-Grid-col ms-u-sm6">
 					<div class="ms-Grid-col ms-u-sm12">
 						<label class="ms-Label">Time for Moderated Caucus</label>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
 						<div class="ms-TextField">
-							<input type="number" class="ms-TextField-field" style="font-size: 6em; height: auto; text-align: center; width: 25%; display: inline; float: right;" value="0">
+							<input type="number" class="ms-TextField-field" style="font-size: 6em; height: auto; text-align: center; width: 25%; display: inline; float: right;" value="0" id="mod-minutes">
 						</div>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
 						<div class="ms-TextField">
-							<input type="number" class="ms-TextField-field" style="font-size: 6em; height: auto; text-align: center; width: 25%; display: inline; float: left;" value="0">
+							<input type="number" class="ms-TextField-field" style="font-size: 6em; height: auto; text-align: center; width: 25%; display: inline; float: left;" value="0" id="mod-seconds">
 						</div>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
@@ -444,26 +458,34 @@
 						<span class="ms-Label" style="float: left;">Seconds</span>
 					</div>
 				</div>
-				<div class="ms-Grid-col ms-u-sm6">
-					<div class="ms-TextField ms-TextField--underlined" id="autocomplete-mod-speaker-div">
-						<label class="ms-Label">Current&nbsp;speaker</label>
-						<input class="ms-TextField-field" type="text" id="autocomplete-mod-speaker" style="color: #0078D7;">
-					</div>
-				</div>
 			</div>
 			<div class="ms-Grid-row">
+				<div class="ms-Grid-col ms-u-sm6">
+					<label class="ms-Label">Set Time per Speaker</label>
+					<div class="ms-TextField" style="display: block;">
+						<label class="ms-Label">Minutes</label>
+						<input type="number" class="ms-TextField-field" value="0" style="font-size: 1.5em; height: auto; text-align: center; display: inline;" value="0" id="mod-speaker-set-minutes">
+					</div>
+					<div class="ms-TextField" style="display: block;">
+						<label class="ms-Label">Seconds</label>
+						<input type="number" class="ms-TextField-field" value="0" style="font-size: 1.5em; height: auto; text-align: center; display: inline;" value="0" id="mod-speaker-set-seconds">
+					</div>
+					<button class="ms-Button ms-Button--primary" style="display: block;" onclick="modSpeakerSet()">
+						<span class="ms-Button-label">Set</span>
+					</button>
+				</div>
 				<div class="ms-Grid-col ms-u-sm6">
 					<div class="ms-Grid-col ms-u-sm12">
 						<label class="ms-Label">Time for speaker</label>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
 						<div class="ms-TextField">
-							<input type="number" class="ms-TextField-field" style="font-size: 4em; width: 20%; height: auto; text-align: center; display: inline; float: right;" value="0" disabled="true">
+							<input type="number" class="ms-TextField-field" style="font-size: 4em; width: 20%; height: auto; text-align: center; display: inline; float: right;" value="0" disabled="true" id="mod-speaker-minutes">
 						</div>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
 						<div class="ms-TextField">
-							<input type="number" class="ms-TextField-field" style="font-size: 4em; width: 20%; height: auto; text-align: center; display: inline; float: left;" value="0" disabled="true">
+							<input type="number" class="ms-TextField-field" style="font-size: 4em; width: 20%; height: auto; text-align: center; display: inline; float: left;" value="0" disabled="true" id="mod-speaker-seconds">
 						</div>
 					</div>
 					<div class="ms-Grid-col ms-u-sm6">
@@ -473,32 +495,20 @@
 						<span class="ms-Label" style="float: left;">Seconds</span>
 					</div>
 				</div>
-				<div class="ms-Grid-col ms-u-sm6">
-					<label class="ms-Label">Set Time per Speaker</label>
-					<div class="ms-TextField" style="display: inline-block;">
-						<input type="number" class="ms-TextField-field" value="0" style="font-size: 1.5em; height: auto; text-align: center; display: inline;" value="0">
-					</div>
-					<div class="ms-TextField" style="display: inline-block;">
-						<input type="number" class="ms-TextField-field" value="0" style="font-size: 1.5em; height: auto; text-align: center; display: inline;" value="0">
-					</div>
-					<button class="ms-Button ms-Button--primary" style="display: inline-block;">
-						<span class="ms-Button-label">Set</span>
-					</button>
-				</div>
 			</div>
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12">
 					<div class="ms-Grid-col ms-u-sm12">
-						<button class="ms-Button ms-Button--primary">
-							<span class="ms-Button-label">Start Moderated Caucus</span>
+						<button class="ms-Button ms-Button--primary" onclick="ModTimer()">
+							<span class="ms-Button-label" id="mod-caucus-button-label">Start Moderated Caucus</span>
 						</button>
-						<button class="ms-Button ms-Button--primary hidden">
-							<span class="ms-Button-label">Pause</span>
+						<button class="ms-Button hidden mod-control-buttons" onclick="modPause()">
+							<span class="ms-Button-label" id="mod-caucus-pause-button-label">Pause</span>
 						</button>
-						<button class="ms-Button hidden">
+						<button class="ms-Button hidden mod-control-buttons" onclick="modExtendMin()">
 							<span class="ms-Button-label">+1 min</span>
 						</button>
-						<button class="ms-Button hidden">
+						<button class="ms-Button hidden mod-control-buttons" onclick="modExtendSec()">
 							<span class="ms-Button-label">+10 sec</span>
 						</button>
 					</div>
@@ -549,13 +559,13 @@
 					<button class="ms-Button ms-Button--primary" onclick="UnmodTimer()" style="margin-top: 15px;">
 						<span class="ms-Button-label" id="unmod-caucus-button-label">Start Unmoderated Caucus</span>
 					</button>
-					<button class="ms-Button hidden unmod-extend-buttons" onclick="unmodPause()">
+					<button class="ms-Button hidden unmod-control-buttons" onclick="unmodPause()">
 						<span class="ms-Button-label" id="unmod-caucus-pause-button-label">Pause</span>
 					</button>
-					<button class="ms-Button hidden unmod-extend-buttons" onclick="unmodExtendMin()">
+					<button class="ms-Button hidden unmod-control-buttons" onclick="unmodExtendMin()">
 						<span class="ms-Button-label">+1 min</span>
 					</button>
-					<button class="ms-Button hidden unmod-extend-buttons" onclick="unmodExtendSec()">
+					<button class="ms-Button hidden unmod-control-buttons" onclick="unmodExtendSec()">
 						<span class="ms-Button-label">+10 sec</span>
 					</button>
 				</div>

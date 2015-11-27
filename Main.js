@@ -137,10 +137,9 @@ if ($.fn.TextField) {
 }
 /** End of Office UI Fabric Code */ 
 
-/** My 
- * Functions */
+/** My Functions */
 
-/** For unmod functions */
+/* For unmoderated caucus */
 var unmodMins, unmodSecs, unmodControl;
 function UnmodTimer() {
   if (document.getElementById("unmod-caucus-button-label").innerHTML == "Stop Unmoderated Caucus") {
@@ -151,7 +150,7 @@ function UnmodTimer() {
     // enable text fields
   	document.getElementById("unmod-minutes").disabled = false;
   	document.getElementById("unmod-seconds").disabled = false;
-    var panel = jQuery('.unmod-extend-buttons');
+    var panel = jQuery('.unmod-control-buttons');
     var cssClass = 'ms-u-slideRightOut40';
     panel.addClass(cssClass);
     setTimeout(function () {
@@ -165,7 +164,7 @@ function UnmodTimer() {
 
   unmodMins = parseInt(document.getElementById('unmod-minutes').value);
   unmodSecs = parseInt(document.getElementById('unmod-seconds').value);
-  if (unmodSecs <= 0 && unmodMins <= 0) {
+  if ((unmodMins == 0 && unmodSecs == 0) || (unmodMins < 0 || unmodSecs < 0)) {
     unmodSecs = unmodMins = 0;
     document.getElementById("unmod-minutes").value = unmodMins;
     document.getElementById("unmod-seconds").value = unmodSecs;
@@ -177,7 +176,7 @@ function UnmodTimer() {
   document.getElementById("unmod-minutes").disabled = true;
   document.getElementById("unmod-seconds").disabled = true;
 
-  panel = jQuery('.unmod-extend-buttons');
+  panel = jQuery('.unmod-control-buttons');
   panel.removeClass("hidden");
   cssClass = 'ms-u-slideLeftIn40';
   panel.addClass(cssClass);
@@ -207,7 +206,7 @@ function UnmodCountdown() {
   	document.getElementById("unmod-minutes").disabled = false;
   	document.getElementById("unmod-seconds").disabled = false;
 
-    panel = jQuery('.unmod-extend-buttons');
+    panel = jQuery('.unmod-control-buttons');
     cssClass = 'ms-u-slideRightOut40';
     panel.addClass(cssClass);
     setTimeout(function () {
@@ -234,6 +233,143 @@ function unmodExtendMin() {
 function unmodExtendSec() {
   unmodSecs += 10;
 }
+
+/* For moderated caucus */
+var modMins, modSecs, modControl, modSpeakerMins, modSpeakerSecs, modSpeakerSetMins, modSpeakerSetSecs, modSpeakerControl;
+function ModTimer() {
+  if (document.getElementById("mod-caucus-button-label").innerHTML == "Stop Moderated Caucus") {
+    modEnd();
+    return;
+  }
+
+  modMins = parseInt(document.getElementById('mod-minutes').value);
+  modSecs = parseInt(document.getElementById('mod-seconds').value);
+  if ((modSecs == 0 && modMins == 0) || (modSecs < 0 || modMins < 0)) {
+    modSecs = modMins = 0;
+    document.getElementById("mod-minutes").value = modMins;
+    document.getElementById("mod-seconds").value = modSecs;
+    return;
+  }
+  modControl = setInterval(ModCountdown, 1000);
+
+  // disable text fields
+  document.getElementById("mod-minutes").disabled = true;
+  document.getElementById("mod-seconds").disabled = true;
+
+  panel = jQuery('.mod-control-buttons');
+  panel.removeClass("hidden");
+  cssClass = 'ms-u-slideLeftIn40';
+  panel.addClass(cssClass);
+  setTimeout(function () {
+    panel.removeClass(cssClass)
+  }, 250);
+
+  document.getElementById("mod-caucus-button-label").innerHTML = "Stop Moderated Caucus";
+
+  // for speaker time countdown
+  modSpeakerReset();
+}
+
+function ModCountdown() {
+  while (modSecs > 60) {
+    modSecs -= 60;
+    modMins += 1;
+  }
+  if (modSecs == 0 && modMins > 0) {
+    modMins -= 1;
+    modSecs = 60;
+  }
+  modSecs -= 1;
+  document.getElementById("mod-minutes").value = modMins;
+  document.getElementById("mod-seconds").value = modSecs;
+  if (modSecs <= 9 && modSecs > 0) document.getElementById("mod-seconds").value = "0" + modSecs;
+  if (modSecs == 0 && modMins == 0) {
+    modEnd();
+  }
+}
+function modEnd(){
+  clearInterval(modControl);
+  modMins = modSecs = 0;
+  document.getElementById("mod-minutes").value = modMins;
+  document.getElementById("mod-seconds").value = modSecs;
+  // enable text fields
+  document.getElementById("mod-minutes").disabled = false;
+  document.getElementById("mod-seconds").disabled = false;
+  var panel = jQuery('.mod-control-buttons');
+  var cssClass = 'ms-u-slideRightOut40';
+  panel.addClass(cssClass);
+  setTimeout(function () {
+    panel.removeClass(cssClass);
+    panel.addClass("hidden");
+  }, 250);
+  document.getElementById("mod-caucus-button-label").innerHTML = "Start Moderated Caucus";
+  document.getElementById("mod-caucus-pause-button-label").innerHTML = "Pause";
+
+  clearInterval(modSpeakerControl);
+  document.getElementById("mod-speaker-minutes").value = 0;
+  document.getElementById("mod-speaker-seconds").value = 0;
+}
+function modPause() {
+  if (document.getElementById("mod-caucus-pause-button-label").innerHTML == "Pause"){
+    clearInterval(modControl);
+    clearInterval(modSpeakerControl);
+    document.getElementById("mod-caucus-pause-button-label").innerHTML = "Resume";
+  }
+  else {
+    modControl = setInterval(ModCountdown, 1000);
+    modSpeakerControl = setInterval(ModSpeakerCountdown, 1000);
+    document.getElementById("mod-caucus-pause-button-label").innerHTML = "Pause";
+  }
+}
+function modExtendMin() {
+  modMins += 1;
+}
+function modExtendSec() {
+  modSecs += 10;
+}
+
+function modSpeakerReset() {
+  document.getElementById("mod-speaker-minutes").value = modSpeakerSetMins;
+  document.getElementById("mod-speaker-seconds").value = modSpeakerSetSecs;
+  modSpeakerMins = modSpeakerSetMins;
+  modSpeakerSecs = modSpeakerSetSecs;
+  if (modSpeakerControl) {
+    clearInterval(modSpeakerControl);
+  }
+  if (modSpeakerMins > 0 || modSpeakerSecs > 0) {
+    modSpeakerControl = setInterval(ModSpeakerCountdown, 1000);
+  }
+}
+function modSpeakerSet() {
+  document.getElementById("mod-speaker-minutes").value = modSpeakerMins;
+  document.getElementById("mod-speaker-seconds").value = modSpeakerSecs;
+  if ((modSpeakerSecs == 0 && modSpeakerMins == 0) || (modSpeakerMins < 0 || modSpeakerSecs < 0)) {
+    modSpeakerSecs = modSpeakerMins = 0;
+    document.getElementById("mod-speaker-minutes").value = modSpeakerMins;
+    document.getElementById("mod-speaker-seconds").value = modSpeakerSecs;
+    return;
+  }
+  modSpeakerSetMins = document.getElementById("mod-speaker-set-minutes").value;
+  modSpeakerSetSecs = document.getElementById("mod-speaker-set-seconds").value;
+}
+function ModSpeakerCountdown() {
+  while (modSpeakerSecs > 60) {
+    modSpeakerSecs -= 60;
+    modSpeakerMins += 1;
+  }
+  if (modSpeakerSecs == 0 && modSpeakerMins > 0) {
+    modSpeakerMins -= 1;
+    modSpeakerSecs = 60;
+  }
+  modSpeakerSecs -= 1;
+  document.getElementById("mod-speaker-minutes").value = modSpeakerMins;
+  document.getElementById("mod-speaker-seconds").value = modSpeakerSecs;
+  if (modSpeakerSecs <= 9 && modSpeakerSecs > 0) document.getElementById("mod-speaker-seconds").value = "0" + modSpeakerSecs;
+  if (modSpeakerSecs == 0 && modSpeakerMins == 0) {
+    clearInterval(modSpeakerControl);
+  }
+}
+
 
 // Dialogs in and out functions
 function aboutIn() {
@@ -771,7 +907,8 @@ $(function(){
 	});
 });
 
-jQuery.ui.autocomplete.prototype._resizeMenu = function () {
-  var ul = this.menu.element;
-  ul.outerWidth(this.element.outerWidth());
-}
+$(function(){
+  $('#autocomplete-gsl').autocomplete({
+    lookup: masterList
+  });
+});

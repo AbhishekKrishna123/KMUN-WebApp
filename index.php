@@ -135,11 +135,12 @@
 				width: 300px;
 				border: 1px solid #cccccc;
 				background: #ffffff; 
-				max-height: 100px;
+				min-height: 0px;
+				max-height: 30px;
 				overflow-y: auto;
 				overflow-x: hidden;
 			}
-			.autocomplete-suggestion { 
+			.autocomplete-suggestion {
 				padding-top: 10px;
 				padding-bottom: 10px;
 				padding-left: 5px;
@@ -431,9 +432,9 @@
 				<div class="ms-Grid-col ms-u-sm6">
 					<div class="ms-TextField ms-TextField--underlined" id="autocomplete-mod-speaker-div">
 						<label class="ms-Label">Current&nbsp;speaker</label>
-						<input class="ms-TextField-field" type="text" id="autocomplete-mod-speaker" style="color: #0078D7;">
+						<input class="ms-TextField-field" type="text" id="autocomplete-mod-speaker" style="color: #0078D7; font-size: 1.5em; height: auto">
 					</div>
-					<button class="ms-Button ms-Button--primary" style="margin-top: 1em" onclick="modSpeakerReset()">
+					<button class="ms-Button ms-Button--primary" style="margin-top: 1em" onclick="modSpeakerButtonReset()">
 						<span class="ms-Button-label">Reset Speaker Time</span>
 					</button>
 				</div>

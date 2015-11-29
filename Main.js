@@ -73,16 +73,6 @@
         $(this).removeClass('is-open');
         $navBar.removeClass('is-open').find('.ms-NavBar-item--hasMenu').removeClass('is-selected');
       });
-
-      // Hide any menus and close the search box when clicking anywhere in the document.
-      $(document).on('click', 'html', function (event) {
-        $navBar.find('.ms-NavBar-item').removeClass('is-selected').find('.ms-ContextualMenu').removeClass('is-open');
-
-        // Close and blur the search box if it doesn't have text.
-        if ($navBar.find('.ms-NavBar-item.ms-NavBar-item--search .ms-TextField-field').val().length === 0) {
-          $navBar.find('.ms-NavBar-item.ms-NavBar-item--search').removeClass('is-open').find('.ms-TextField-field').blur();
-        }
-      });
     });
   };
 })(jQuery);
@@ -137,7 +127,24 @@ if ($.fn.TextField) {
 }
 /** End of Office UI Fabric Code */ 
 
-/** My Functions */
+/* My Functions */
+
+/* For animations */
+function animateIn(panel, animationClass, delay) {  // element to animate, the animation class, delay after which class should be removed
+  panel.removeClass("hidden");
+  panel.addClass(animationClass);
+  setTimeout(function () {
+    panel.removeClass(animationClass)
+  }, delay);
+}
+
+function animateOut(panel, animationClass, delay) { // element to animate, the animation class, delay after which class should be removed
+  panel.addClass(animationClass);
+  setTimeout(function () {
+    panel.removeClass(animationClass);
+    panel.addClass("hidden");
+  }, delay);
+}
 
 /* For unmoderated caucus */
 var unmodMins, unmodSecs, unmodControl;
@@ -149,27 +156,25 @@ function UnmodTimer() {
 
   unmodMins = parseInt(document.getElementById('unmod-minutes').value);
   unmodSecs = parseInt(document.getElementById('unmod-seconds').value);
-  if ((unmodMins == 0 && unmodSecs == 0) || (unmodMins < 0 || unmodSecs < 0)) {
+  if ((unmodMins == 0 && unmodSecs == 0) || (unmodMins < 0 || unmodSecs < 0)) { // Reset to zero
     unmodSecs = unmodMins = 0;
     document.getElementById("unmod-minutes").value = unmodMins;
     document.getElementById("unmod-seconds").value = unmodSecs;
     return;
   }
-  unmodControl = setInterval(UnmodCountdown, 1000);
+  unmodControl = setInterval(UnmodCountdown, 1000); // Start countdown
 
   // disable text fields
   document.getElementById("unmod-minutes").disabled = true;
   document.getElementById("unmod-seconds").disabled = true;
 
-  panel = jQuery('.unmod-control-buttons');
-  panel.removeClass("hidden");
-  cssClass = 'ms-u-slideLeftIn40';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass)
-  }, 250);
+  animateIn(jQuery('.unmod-control-buttons'), 'ms-u-slideLeftIn40', 250);
 
   document.getElementById("unmod-caucus-button-label").innerHTML = "Stop Unmoderated Caucus";
+
+  // log start of unmoderated caucus
+  var str = "Unmoderated caucus started by " +  document.getElementById("autocomplete-unmod-start").value + " for " + unmodMins.toString() + " mins, " + unmodSecs.toString() + " secs on the topic " + document.getElementById("unmod-topic-field").value;
+  logEvents("unmod", str);
 }
 function UnmodCountdown() {
   while (unmodSecs > 60) {
@@ -198,34 +203,38 @@ function unmodEnd(){
   document.getElementById("unmod-minutes").disabled = false;
   document.getElementById("unmod-seconds").disabled = false;
 
-  var panel = jQuery('.unmod-control-buttons');
-  var cssClass = 'ms-u-slideRightOut40';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 250);
+  animateOut(jQuery('.unmod-control-buttons'), 'ms-u-slideRightOut40', 250);
 
   document.getElementById("unmod-caucus-button-label").innerHTML = "Start Unmoderated Caucus";
   document.getElementById("unmod-caucus-pause-button-label").innerHTML = "Pause";
 
+  // clear fields
   document.getElementById("autocomplete-unmod-start").value = "";
+  document.getElementById("unmod-topic-field").value = "";
+
+  logEvents("unmod", "End of unmoderated caucus");  // log the end of unmod caucus
 }
 function unmodPause() {
 	if (document.getElementById("unmod-caucus-pause-button-label").innerHTML == "Pause"){
 		clearInterval(unmodControl);
 		document.getElementById("unmod-caucus-pause-button-label").innerHTML = "Resume";
+    logEvents("unmod", "Unmoderated caucus paused");
 	}
 	else {
 		unmodControl = setInterval(UnmodCountdown, 1000);
 		document.getElementById("unmod-caucus-pause-button-label").innerHTML = "Pause";
+    logEvents("unmod", "Unmoderated caucus resumed");
 	}
 }
 function unmodExtendMin() {
   unmodMins += 1;
+  document.getElementById("unmod-minutes").value = unmodMins;
+  logEvents("unmod", "Unmoderated caucus extended by 1 min");
 }
 function unmodExtendSec() {
   unmodSecs += 10;
+  document.getElementById("unmod-seconds").value = unmodSecs;
+  logEvents("unmod", "Unmoderated caucus extended by 10 secs");
 }
 
 
@@ -239,30 +248,27 @@ function ModTimer() {
 
   modMins = parseInt(document.getElementById('mod-minutes').value);
   modSecs = parseInt(document.getElementById('mod-seconds').value);
-  if ((modSecs == 0 && modMins == 0) || (modSecs < 0 || modMins < 0)) {
+  if ((modSecs == 0 && modMins == 0) || (modSecs < 0 || modMins < 0)) { // Reset to zero
     modSecs = modMins = 0;
     document.getElementById("mod-minutes").value = modMins;
     document.getElementById("mod-seconds").value = modSecs;
     return;
   }
-  modControl = setInterval(ModCountdown, 1000);
+  modControl = setInterval(ModCountdown, 1000); // Start countdown
 
   // disable text fields
   document.getElementById("mod-minutes").disabled = true;
   document.getElementById("mod-seconds").disabled = true;
 
-  panel = jQuery('.mod-control-buttons');
-  panel.removeClass("hidden");
-  cssClass = 'ms-u-slideLeftIn40';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass)
-  }, 250);
+  animateIn(jQuery('.mod-control-buttons'), 'ms-u-slideLeftIn40', 250);
 
   document.getElementById("mod-caucus-button-label").innerHTML = "Stop Moderated Caucus";
 
-  // for speaker time countdown
-  modSpeakerReset();
+  // log the start of mod caucus
+  var str = "Moderated caucus started by " +  document.getElementById("autocomplete-mod-start").value + " for " + modMins.toString() + " mins, " + modSecs.toString() + " secs on the topic " + document.getElementById("mod-topic-field").value;
+  logEvents("mod", str);
+
+  modSpeakerReset();  // for speaker time countdown
 }
 
 function ModCountdown() {
@@ -290,13 +296,9 @@ function modEnd(){
   // enable text fields
   document.getElementById("mod-minutes").disabled = false;
   document.getElementById("mod-seconds").disabled = false;
-  var panel = jQuery('.mod-control-buttons');
-  var cssClass = 'ms-u-slideRightOut40';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 250);
+
+  animateOut(jQuery('.mod-control-buttons'), 'ms-u-slideRightOut40', 250);
+
   document.getElementById("mod-caucus-button-label").innerHTML = "Start Moderated Caucus";
   document.getElementById("mod-caucus-pause-button-label").innerHTML = "Pause";
 
@@ -306,26 +308,33 @@ function modEnd(){
 
   document.getElementById("autocomplete-mod-speaker").value = "";
   document.getElementById("autocomplete-mod-start").value = "";
+  document.getElementById("mod-topic-field").value = "";
+
+  logEvents("mod", "End of moderated caucus");  // log the end of mod caucus
 }
 function modPause() {
   if (document.getElementById("mod-caucus-pause-button-label").innerHTML == "Pause"){
     clearInterval(modControl);
     clearInterval(modSpeakerControl);
     document.getElementById("mod-caucus-pause-button-label").innerHTML = "Resume";
+    logEvents("mod", "Moderated caucus paused");
   }
   else {
     modControl = setInterval(ModCountdown, 1000);
     modSpeakerControl = setInterval(ModSpeakerCountdown, 1000);
     document.getElementById("mod-caucus-pause-button-label").innerHTML = "Pause";
+    logEvents("mod", "Moderated caucus resumed");
   }
 }
 function modExtendMin() {
   modMins += 1;
   document.getElementById("mod-minutes").value = modMins;
+  logEvents("mod", "Moderated caucus extended by 1 min");
 }
 function modExtendSec() {
   modSecs += 10;
   document.getElementById("mod-seconds").value = modSecs;
+  logEvents("mod", "Moderated caucus extended by 10 secs");
 }
 function modSpeakerButtonReset(){ // For resetting with the button
   document.getElementById("autocomplete-mod-speaker").value = ""; //Clears the current speaker
@@ -338,8 +347,9 @@ function modSpeakerReset() {
   modSpeakerSecs = modSpeakerSetSecs;
   clearInterval(modSpeakerControl); // Clear any existing timer, if any
   if (modSpeakerMins > 0 || modSpeakerSecs > 0) {
-    if (document.getElementById("mod-caucus-pause-button-label").innerHTML == "Pause" || (modSpeakerMins != 0 && modSpeakerSecs != 0)) { // Start running only if timer is not paused
+    if (document.getElementById("mod-caucus-pause-button-label").innerHTML == "Pause" && (modMins != 0 || modSecs != 0)) { // Start running only if timer is not paused
       modSpeakerControl = setInterval(ModSpeakerCountdown, 1000);
+      logModSpeaker(); // log event
     }
   }
 }
@@ -350,6 +360,11 @@ function modSpeakerSet() {
     modSpeakerSetSecs = modSpeakerSetMins = 0;
     document.getElementById("mod-speaker-set-minutes").value = modSpeakerSetMins;
     document.getElementById("mod-speaker-set-seconds").value = modSpeakerSetSecs;
+  }
+  else {
+    // log event
+    var str = modSpeakerSetMins.toString() + " mins, " + modSpeakerSetSecs.toString() + " secs set as time per speaker";
+    logEvents("mod", str);
   }
 }
 function ModSpeakerCountdown() {
@@ -373,40 +388,16 @@ function ModSpeakerCountdown() {
 
 // Dialogs in and out functions
 function aboutIn() {
-  var panel = jQuery('#AboutDialog');
-  panel.removeClass("hidden");
-  cssClass = 'ms-u-scaleUpIn100';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-  }, 500);
+  animateIn(jQuery('#AboutDialog'), 'ms-u-scaleUpIn100', 500);
 }
 function aboutOut() {
-  var panel = jQuery('#AboutDialog');
-  var cssClass = 'ms-u-scaleDownOut98';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 500);
+  animateOut(jQuery('#AboutDialog'), 'ms-u-scaleDownOut98', 500);
 }
 function helpIn() {
-  var panel = jQuery('#HelpDialog');
-  panel.removeClass("hidden");
-  var cssClass = 'ms-u-scaleUpIn100';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass)
-  }, 500);
+  animateIn(jQuery('#HelpDialog'), 'ms-u-scaleUpIn100', 500);
 }
 function helpOut() {
-  var panel = jQuery('#HelpDialog');
-  var cssClass = 'ms-u-scaleDownOut98';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 500);
+  animateOut(jQuery('#HelpDialog'), 'ms-u-scaleDownOut98', 500);
 }
 function VotingIn() {
   if (document.getElementById("voting-choice-1").checked == false && document.getElementById("voting-choice-2").checked == false && document.getElementById("voting-choice-3").checked == false) {
@@ -417,112 +408,54 @@ function VotingIn() {
 		alertIn();
 		return;
 	}
-  var panel1 = jQuery('#voting-radio');
-  var cssClass1 = 'ms-u-slideRightOut40';
-  panel1.addClass(cssClass1);
-  setTimeout(function () {
-    panel1.removeClass(cssClass1);
-    panel1.addClass("hidden");
-  }, 200);
+  animateOut(jQuery('#voting-radio'), 'ms-u-slideRightOut40', 200);
 
   setTimeout(function () {
     if (document.getElementById("voting-choice-1").checked == true) {
-     var  panel2 = jQuery('#section-SimpleMajority');
+     var  panel = jQuery('#section-SimpleMajority');
 			initSimpleMajorityVote();
+      logEvents("SimpleMajorityVote", "Simple Majority Vote started");
     }
     else if (document.getElementById("voting-choice-2").checked == true) {
-      panel2 = jQuery('#section-ResolutionVote');
+      panel = jQuery('#section-ResolutionVote');
 			initResolutionVote();
+      logEvents("ResolutionVote", "Resolution Vote started");
     }
     else if (document.getElementById("voting-choice-3").checked == true) {
-      panel2 = jQuery('#section-RollCallVote');
+      panel = jQuery('#section-RollCallVote');
 			initRollCallVote();
+      logEvents("RollCallVote", "Roll Call Vote started");
     }
-    panel2.removeClass("hidden");
-    var cssClass = 'ms-u-slideUpIn20';
-    panel2.addClass(cssClass);
-    setTimeout(function () {
-      panel2.removeClass(cssClass)
-    }, 200);
-  }, 300);
+    animateIn(panel, 'ms-u-slideUpIn20', 200);
+  }, 250);
 }
 
 function SimpleMajorityVoteOut() {
-  var panel1 = jQuery('#section-SimpleMajority');
-  var cssClass1 = 'ms-u-slideDownOut20';
-  panel1.addClass(cssClass1);
+  animateOut(jQuery('#section-SimpleMajority'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    panel1.removeClass(cssClass1);
-    panel1.addClass("hidden");
-  }, 200);
-
-  setTimeout(function () {
-    var panel2 = jQuery('#voting-radio');
-    panel2.removeClass("hidden");
-    var cssClass = 'ms-u-slideLeftIn40';
-    panel2.addClass(cssClass);
-    setTimeout(function () {
-      panel2.removeClass(cssClass)
-    }, 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
   }, 250);
 }
 
 function ResolutionVoteOut() {
-  var panel1 = jQuery('#section-ResolutionVote');
-  var cssClass1 = 'ms-u-slideDownOut20';
-  panel1.addClass(cssClass1);
+  animateOut(jQuery('#section-ResolutionVote'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    panel1.removeClass(cssClass1);
-    panel1.addClass("hidden");
-  }, 200);
-
-  setTimeout(function () {
-    var panel2 = jQuery('#voting-radio');
-    panel2.removeClass("hidden");
-    var cssClass = 'ms-u-slideLeftIn40';
-    panel2.addClass(cssClass);
-    setTimeout(function () {
-      panel2.removeClass(cssClass)
-    }, 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
   }, 250);
 }
 
 function RollCallVoteOut() {
-  var panel1 = jQuery('#section-RollCallVote');
-  var cssClass1 = 'ms-u-slideDownOut20';
-  panel1.addClass(cssClass1);
+  animateOut(jQuery('#section-RollCallVote'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    panel1.removeClass(cssClass1);
-    panel1.addClass("hidden");
-  }, 200);
-  setTimeout(function () {
-    var panel2 = jQuery('#voting-radio');
-    panel2.removeClass("hidden");
-    var cssClass = 'ms-u-slideLeftIn40';
-    panel2.addClass(cssClass);
-    setTimeout(function () {
-      panel2.removeClass(cssClass)
-    }, 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
   }, 250);
 }
 
 function VotingResultsIn() {
-  var panel = jQuery('#VotingResultsDialog');
-  panel.removeClass("hidden");
-  var cssClass = 'ms-u-scaleUpIn100';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass)
-  }, 300);
+  animateIn(jQuery('#VotingResultsDialog'), 'ms-u-scaleUpIn100', 500);
 }
 function VotingResultsOut() {
-  var panel = jQuery('#VotingResultsDialog');
-  var cssClass = 'ms-u-scaleDownOut98';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 200);
+  animateOut(jQuery('#VotingResultsDialog'), 'ms-u-scaleDownOut98', 200);
 	if (document.getElementById("voting-choice-1").checked == true) {
       setTimeout(SimpleMajorityVoteOut, 300);
     }
@@ -535,32 +468,20 @@ function VotingResultsOut() {
 }
 
 function alertIn() {
-  var panel = jQuery('#AlertDialog');
-  panel.removeClass("hidden");
-  cssClass = 'ms-u-scaleUpIn100';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-  }, 500);
+  animateIn(jQuery('#AlertDialog'), 'ms-u-scaleUpIn100', 500);
 }
 function alertOut() {
-  var panel = jQuery('#AlertDialog');
-  var cssClass = 'ms-u-scaleDownOut98';
-  panel.addClass(cssClass);
-  setTimeout(function () {
-    panel.removeClass(cssClass);
-    panel.addClass("hidden");
-  }, 500);
+  animateOut(jQuery('#AlertDialog'), 'ms-u-scaleDownOut98', 500);
 }
 
 var masterList = [];
-/**
+/*
  * masterList contains list of delegates obtained from the database
  * Is populated by JS code generated by PHP
  */
 
 /* Voting Functions */
-/**
+/*
  * Explanation of activeList is as folows: 
  * 0 for delegate name
  * 1 for Roll Call temporary Values (0-absent, 1-present&voting, 2-present)
@@ -634,6 +555,8 @@ function doRollCallVote(clickedButton) {
 		}
 		VotingResultsIn();	// Show the results
 		RollCallDone = true;
+
+    logRollCallVote();  // log results of voting
 	}
 	else {
 		current++;
@@ -642,7 +565,7 @@ function doRollCallVote(clickedButton) {
 	}
 }
 
-/** Simple Majority Vote */
+/* Simple Majority Vote */
 
 var SimpleMajorityActive = 0;
 var presentDelegates = 0;
@@ -709,6 +632,8 @@ function doSimpleMajorityVote(clickedButton) {
 			document.getElementById("VotingResultsDialog-content").innerHTML += "<br><br>Vote fails. <span class='ms-Icon ms-Icon--frowny'></span>";
 		}
 		VotingResultsIn();
+
+    logSimpleMajorityVote();  // log results of voting
 	}
 	else {
 		do {
@@ -730,7 +655,7 @@ function doSimpleMajorityVote(clickedButton) {
 	}
 }
 
-/** Resolution Vote */
+/* Resolution Vote */
 var ResolutionActive = 0;
 var ResolutionDone = 0;
 
@@ -803,6 +728,8 @@ function doResolutionVote(clickedButton) {
 			document.getElementById("VotingResultsDialog-content").innerHTML += "<br><br>Resolution fails. <span class='ms-Icon ms-Icon--frowny'></span>";
 		}
 		VotingResultsIn();
+
+    logResolutionVote();  // log results of vote
 	}
 	else {
 		do {
@@ -840,33 +767,17 @@ $(document).ready(function(){
 				});
         
 				$("#button-voting").click(function(){
-					$("#tab-voting").removeClass("hidden");
-					$("#tab-voting").addClass("ms-u-scaleUpIn100");
-					setTimeout(function(){
-						$("#tab-voting").removeClass("ms-u-scaleUpIn100");
-					}, 200);
+          animateIn(jQuery('#tab-voting'), 'ms-u-scaleUpIn100', 250);
 				});
 				$("#button-gsl").click(function(){
-					$("#tab-gsl").removeClass("hidden");
-					$("#tab-gsl").addClass("ms-u-scaleUpIn100");
-					setTimeout(function(){
-						$("#tab-gsl").removeClass("ms-u-scaleUpIn100");
-					}, 200);
-				})
+          animateIn(jQuery('#tab-gsl'), 'ms-u-scaleUpIn100', 250);
+				});
 				$("#button-mod").click(function(){
-					$("#tab-mod").removeClass("hidden");
-					$("#tab-mod").addClass("ms-u-scaleUpIn100");
-					setTimeout(function(){
-						$("#tab-mod").removeClass("ms-u-scaleUpIn100");
-					}, 200);
-				})
+          animateIn(jQuery('#tab-mod'), 'ms-u-scaleUpIn100', 250);
+				});
 				$("#button-unmod").click(function(){
-					$("#tab-unmod").removeClass("hidden");
-					$("#tab-unmod").addClass("ms-u-scaleUpIn100");
-					setTimeout(function(){
-						$("#tab-unmod").removeClass("ms-u-scaleUpIn100");
-					}, 200);
-				})
+          animateIn(jQuery('#tab-unmod'), 'ms-u-scaleUpIn100', 250);
+				});
 });
 
 // Animate page elements when loaded
@@ -886,36 +797,163 @@ $(document).ready(function(){
 // 	$('hr').hide(0).delay(2000).fadeIn(200);
 // });
 
-$(document).ready(function(){
-	$('body').css({opacity: 1});
-});
+// $(document).ready(function(){
+// 	$('body').css({opacity: 1});
+// });
 
 // For autocomplete function
 $(function(){
 	$('#autocomplete-unmod-start').autocomplete({
-		lookup: masterList,
-    autoFocus: true
+		lookup: masterList
 	});
 });
 $(function(){
 	$('#autocomplete-mod-start').autocomplete({
-		lookup: masterList,
-    autoFocus: true
+		lookup: masterList
 	});
 });
 $(function(){
 	$('#autocomplete-mod-speaker').autocomplete({
 		lookup: masterList,
-    autoFocus: true,
     onSelect: function(){
       modSpeakerReset();
     }
 	});
 });
-
 $(function(){
   $('#autocomplete-gsl').autocomplete({
-    lookup: masterList,
-    autoFocus: true
+    lookup: masterList
   });
 });
+
+document.getElementById("CurrentAgendaField").addEventListener("focusin", agendaFocus);
+document.getElementById("CurrentAgendaField").addEventListener("focusout", agendaBlur);
+
+function agendaBlur() {
+  // store state
+  var store = db.transaction("StoreFields", "readwrite").objectStore("StoreFields");
+  store.put({fieldName: "currentAgenda", fieldValue: document.getElementById("CurrentAgendaField").value});
+
+  logEvents("general", "Current agenda has been set to " + document.getElementById("CurrentAgendaField").value);
+}
+
+function agendaFocus() {
+  var store = db.transaction("StoreFields", "readonly").objectStore("StoreFields");
+  var request = store.get("currentAgenda");
+
+  request.onsuccess = function() {
+    document.getElementById("CurrentAgendaField").value = request.result.fieldValue;
+  }
+}
+
+
+var request = indexedDB.open("test100");
+
+request.onupgradeneeded = function(event) {
+  // The database did not previously exist, so create object stores and indexes.
+  var store = request.result.createObjectStore("StoreFields", {keyPath: "fieldName"});
+  var fields = store.createIndex("fieldValue", "fieldValue");
+  var logs = request.result.createObjectStore("Log", {keyPath: "id", autoIncrement: true});
+
+  var sampleItem = { category: "general", date: Date(), string: "Database created" };
+  logs.add(sampleItem);
+};
+
+request.onsuccess = function() {
+  db = request.result;
+  logEvents("general", "MUN Moderator started");
+};
+
+
+
+function logEvents(categoryArgs, stringArgs) {
+  var store = db.transaction("Log", "readwrite").objectStore("Log");
+  var item = { category: categoryArgs, date: Date(), string: stringArgs};
+  store.put(item);
+}
+
+function logModSpeaker() {
+  var str;
+  var speaker = document.getElementById("autocomplete-mod-speaker").value;
+  if (speaker == "") {
+    str = "New speaker is speaking";
+  }
+  else {
+    str = document.getElementById("autocomplete-mod-speaker").value + " is speaking";
+  }
+  logEvents("mod", str);
+}
+
+function logRollCallVote() {
+  var option1 = 0, option2 = 0, option3 = 0;
+  var str = "Roll Call Vote completed\n";
+  for (i in activeList) {
+    str += activeList[i][0] + " is ";
+    if (activeList[i][2] == 1) {
+      option1++;
+      str += "Present & Voting";
+    }
+    else if (activeList[i][2] == 2) {
+      option2++;
+      str += "Present";
+    }
+    else {
+      option3++;
+      str += "Absent";
+    }
+  }
+  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Present & Voting: " + option1 + ", Present: " + option2 + ", Absent: " + option3;
+  logEvents("RollCallVote", str);
+}
+
+function logSimpleMajorityVote() {
+  var option1 = 0, option2 = 0, option3 = 0;
+  var str = "Simple Majority Vote completed\n";
+  for (i in activeList) {
+    str += activeList[i][0];
+    if (activeList[i][4] == 1) {
+      option1++;
+      str += "voted Yes";
+    }
+    else if (activeList[i][4] == 2) {
+      option2++;
+      str += "voted No";
+    }
+    else {
+      option3++;
+      str += "Abstained";
+    }
+  }
+  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Abstained: " + option3;
+  logEvents("SimpleMajorityVote", str);
+}
+
+function logResolutionVote() {
+  var option1 = 0, option2 = 0, option3 = 0, option4 = 0, option5 = 0;
+  var str = "Simple Majority Vote completed\n";
+  for (i in activeList) {
+    str += activeList[i][0];
+    if (activeList[i][5] == 1) {
+      option1++;
+      str += "voted Yes";
+    }
+    else if (activeList[i][5] == 2) {
+      option2++;
+      str += "voted No";
+    }
+    else if (activeList[i][5] == 3) {
+      option3++;
+      str += "voted Yes with Rights";
+    }
+    else if (activeList[i][5] == 4) {
+      option4++;
+      str += "voted No with Rights";
+    }
+    else {
+      option5++;
+      str += "Abstained";
+    }
+  }
+  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3) + parseInt(option4) + parseInt(option5)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Yes with Rights: " + option3 + ", No with Rights: " + option4 + ", Abstained: " + option5;
+  logEvents("ResolutionVote", str);
+}

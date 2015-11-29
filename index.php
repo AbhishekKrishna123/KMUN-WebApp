@@ -83,9 +83,9 @@
 				border-left: 0px;
 				border-right: 0px;
 			}
-			.is-selected {
+			/*.is-selected {
 				background-color: #0078D7;
-			}
+			}*/
 			.loadingBar {
 				width: 0%;
 				background-color: #0078D7;
@@ -96,7 +96,7 @@
 			}
 			body {
 				min-width: 750px;
-				opacity: 0;
+				/*opacity: 0;*/
 			}
 
 			#autocomplete-unmod-start {
@@ -165,11 +165,11 @@
 			<ul class="ms-NavBar-items">
 				<li class="ms-NavBar-item is-disabled"><div id="headerImage"></div></li>
 				<li class="ms-NavBar-item is-disabled" style="color: #d69d36">MUN Moderator 2016
-				<li class="ms-NavBar-item is-disabled" style="color: #0e71c3">< Committee Name ></li>
+				<li class="ms-NavBar-item is-disabled" style="color: #0e71c3">Committee Name</li>
 				<li class="ms-NavBar-item"><a class="ms-NavBar-link" href="http://kmun.in" target="blank" style="">KMUN Website</a></li>
 				<li class="ms-NavBar-item" onCLick="helpIn()"><a class="ms-NavBar-link" style=""><i class="ms-Icon ms-Icon--question"></i> Help</a></li>
 				<li class="ms-NavBar-item" onClick="aboutIn()"><a class="ms-NavBar-link"  style=""><i class="ms-Icon ms-Icon--info"></i> About</a></li>
-				<li class="ms-NavBar-item ms-NavBar-item--right" onClick="panelIn(this)"><a class="ms-NavBar-link"  style=""><i class="ms-Icon ms-Icon--gear"></i> Settings</a></li>
+				<li class="ms-NavBar-item ms-NavBar-item--right"><a class="ms-NavBar-link"  style=""><i class="ms-Icon ms-Icon--gear"></i> Settings</a></li>
 			</ul>
 		</div>
 		
@@ -180,8 +180,8 @@
 			<div class="ms-Grid-row">
 				<div class="ms-Grid-col ms-u-sm12 block">
 					<div class="ms-TextField ms-TextField--underlined" id="agenda-field">
-						<label class="ms-Label">Current&nbspAgenda</label>
-						<input class="ms-TextField-field" style="color: #0078D7;">
+						<label class="ms-Label">Current&nbsp;Agenda</label>
+						<input class="ms-TextField-field" style="color: #0078D7;" id="CurrentAgendaField">
 					</div>
 				</div>
 			</div>
@@ -248,7 +248,7 @@
 						</div>
 						<div style="margin-top: -1em; margin-bottom: 1.5em;">
 							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="SimpleMajorityVote-current">x</p>
-							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbspof&nbsp</p>
+							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbsp;of&nbsp;</p>
 							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="SimpleMajorityVote-max">y</p>
 						</div>
 					</div>
@@ -299,7 +299,7 @@
 						</div>
 						<div style="margin-top: -1em; margin-bottom: 1.5em;">
 							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-current">x</p>
-							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbspof&nbsp</p>
+							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbsp;of&nbsp;</p>
 							<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-max">y</p>
 						</div>
 					</div>
@@ -414,9 +414,9 @@
 		<div class="ms-Grid hidden" id="tab-mod">
 			<div class="ms-Grid-row" id="mod-topic">
 				<div class="ms-Grid-col ms-u-sm12">
-					<div class="ms-TextField ms-TextField--underlined" id="mod-topic-field">
+					<div class="ms-TextField ms-TextField--underlined">
 						<label class="ms-Label">Topic</label>
-						<input class="ms-TextField-field" style="color: #0078D7;">
+						<input class="ms-TextField-field" style="color: #0078D7;" id="mod-topic-field">
 					</div>
 				</div>
 			</div>
@@ -522,9 +522,9 @@
 		<div class="ms-Grid hidden" id="tab-unmod">
 			<div class="ms-Grid-row" id="unmod-topic">
 				<div class="ms-Grid-col ms-u-sm12">
-					<div class="ms-TextField ms-TextField--underlined" id="unmod-topic-field">
+					<div class="ms-TextField ms-TextField--underlined">
 						<label class="ms-Label">Topic</label>
-						<input class="ms-TextField-field" style="color: #0078D7;">
+						<input class="ms-TextField-field" style="color: #0078D7;" id="unmod-topic-field">
 					</div>
 				</div>
 			</div>
@@ -613,7 +613,7 @@
 			</div>
 			<div class="ms-Dialog-inner">
 			  <div class="ms-Dialog-content">
-				<p class="ms-Dialog-subText">How to use MUN Moderator 2016</p>
+				<p class="ms-Dialog-subText">We have made MUN Moderator 2016 really simple to use. You shouldn't face any difficulty in understanding the operation of MUN Moderator.<br><br>If you want to learn how to use MUN Moderator, head over to the <a href="manual.html" class="ms-Link" target="_blank">MUN Moderator User Manual</a> to learn.<br><br>If you have any other queries, feel free to contact the KMUN Tech Team for any assistance.</p>
 			  </div>
 			  <div class="ms-Dialog-actions">
 				<div class="ms-Dialog-actionsRight" style="text-align: center;">
@@ -680,7 +680,6 @@
 		
 		<script src="jquery.min.js"></script>
 		<script src="Main.js"></script>
-		<script type="text/javascript" src="jquery.searchabledropdown.js"></script>
 		<script type="text/javascript" src="jquery.autocomplete.min.js"></script>
 		
 		<!--Get countries from the database-->
@@ -699,7 +698,7 @@
 				echo ("<h1>Server Error</h1><p>Connection to database could not be established. Please try again, or contact a Tech Team member.</p>");
 				die;
 			}
-			$sqll = "SELECT PortfolioName FROM ComUNSC";
+			$sqll = "SELECT PortfolioName FROM ComUNSC ORDER BY PortfolioName";
 			if(!($check = mysqli_query($conn, $sqll))) {
 				echo ("<h1>Server Error</h1><p>SQL statement 1 could not be run. Please try again, or contact a Tech Team member.</p>");
 				die;

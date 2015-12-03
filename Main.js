@@ -125,7 +125,203 @@ if ($.fn.NavBar) {
 if ($.fn.TextField) {
   $('.ms-TextField').TextField();
 }
+
+/**
+ * Dropdown Plugin
+ * 
+ * Given .ms-Dropdown containers with generic <select> elements inside, this plugin hides the original
+ * dropdown and creates a new "fake" dropdown that can more easily be styled across browsers.
+ * 
+ * @param  {jQuery Object}  One or more .ms-Dropdown containers, each with a dropdown (.ms-Dropdown-select)
+ * @return {jQuery Object}  The same containers (allows for chaining)
+ */
+(function ($) {
+    $.fn.Dropdown = function () {
+
+        /** Go through each dropdown we've been given. */
+        return this.each(function () {
+
+            var $dropdownWrapper = $(this),
+                $originalDropdown = $dropdownWrapper.children('.ms-Dropdown-select'),
+                $originalDropdownOptions = $originalDropdown.children('option'),
+                originalDropdownID = this.id,
+                newDropdownTitle = '',
+                newDropdownItems = '',
+                newDropdownSource = '';
+
+            /** Go through the options to fill up newDropdownTitle and newDropdownItems. */
+            $originalDropdownOptions.each(function (index, option) {
+        
+                /** If the option is selected, it should be the new dropdown's title. */
+                if (option.selected) {
+                    newDropdownTitle = option.text;
+                }
+
+                /** Add this option to the list of items. */
+                newDropdownItems += '<li class="ms-Dropdown-item' + ( (option.disabled) ? ' is-disabled"' : '"' ) + '>' + option.text + '</li>';
+            
+            });
+
+            /** Insert the replacement dropdown. */
+            newDropdownSource = '<span class="ms-Dropdown-title">' + newDropdownTitle + '</span><ul class="ms-Dropdown-items">' + newDropdownItems + '</ul>';
+            $dropdownWrapper.append(newDropdownSource);
+
+            function _openDropdown(evt) {
+                if (!$dropdownWrapper.hasClass('is-disabled')) {
+
+                    /** First, let's close any open dropdowns on this page. */
+                    $dropdownWrapper.find('.is-open').removeClass('is-open');
+
+                    /** Stop the click event from propagating, which would just close the dropdown immediately. */
+                    evt.stopPropagation();
+
+                    /** Before opening, size the items list to match the dropdown. */
+                    var dropdownWidth = $(this).parents(".ms-Dropdown").width();
+                    $(this).next(".ms-Dropdown-items").css('width', dropdownWidth + 'px');
+                
+                    /** Go ahead and open that dropdown. */
+                    $dropdownWrapper.toggleClass('is-open');
+                    $('.ms-Dropdown').each(function(){
+                        if ($(this)[0] !== $dropdownWrapper[0]) {
+                            $(this).removeClass('is-open');
+                        }
+                    });
+
+                    /** Temporarily bind an event to the document that will close this dropdown when clicking anywhere. */
+                    $(document).bind("click.dropdown", function(event) {
+                        $dropdownWrapper.removeClass('is-open');
+                        $(document).unbind('click.dropdown');
+                    });
+                }
+            };
+
+            /** Toggle open/closed state of the dropdown when clicking its title. */
+            $dropdownWrapper.on('click', '.ms-Dropdown-title', function(event) {
+                _openDropdown(event);
+            });
+
+            /** Keyboard accessibility */
+            $dropdownWrapper.on('keyup', function(event) {
+                var keyCode = event.keyCode || event.which;
+                // Open dropdown on enter or arrow up or arrow down and focus on first option
+                if (!$(this).hasClass('is-open')) {
+                    if (keyCode === 13 || keyCode === 38 || keyCode === 40) {
+                       _openDropdown(event);
+                       if (!$(this).find('.ms-Dropdown-item').hasClass('is-selected')) {
+                        $(this).find('.ms-Dropdown-item:first').addClass('is-selected');
+                       }
+                    }
+                }
+                else if ($(this).hasClass('is-open')) {
+                    // Up arrow focuses previous option
+                    if (keyCode === 38) {
+                        if ($(this).find('.ms-Dropdown-item.is-selected').prev().siblings().size() > 0) {
+                            $(this).find('.ms-Dropdown-item.is-selected').removeClass('is-selected').prev().addClass('is-selected');
+                        }
+                    }
+                    // Down arrow focuses next option
+                    if (keyCode === 40) {
+                        if ($(this).find('.ms-Dropdown-item.is-selected').next().siblings().size() > 0) {
+                            $(this).find('.ms-Dropdown-item.is-selected').removeClass('is-selected').next().addClass('is-selected');
+                        }
+                    }
+                    // Enter to select item
+                    if (keyCode === 13) {
+                        if (!$dropdownWrapper.hasClass('is-disabled')) {
+
+                            // Item text
+                            var selectedItemText = $(this).find('.ms-Dropdown-item.is-selected').text()
+
+                            $(this).find('.ms-Dropdown-title').html(selectedItemText);
+
+                            /** Update the original dropdown. */
+                            $originalDropdown.find("option").each(function(key, value) {
+                                if (value.text === selectedItemText) {
+                                    $(this).prop('selected', true);
+                                } else {
+                                    $(this).prop('selected', false);
+                                }
+                            });
+                            $originalDropdown.change();
+
+                            $(this).removeClass('is-open');
+                        }
+                    }                
+                }
+
+                // Close dropdown on esc
+                if (keyCode === 27) {
+                    $(this).removeClass('is-open');
+                }
+            });
+
+            /** Select an option from the dropdown. */
+            $dropdownWrapper.on('click', '.ms-Dropdown-item', function () {
+                if (!$dropdownWrapper.hasClass('is-disabled')) {
+
+                    /** Deselect all items and select this one. */
+                    $(this).siblings('.ms-Dropdown-item').removeClass('is-selected')
+                    $(this).addClass('is-selected');
+
+                    /** Update the replacement dropdown's title. */
+                    $(this).parents().siblings('.ms-Dropdown-title').html($(this).text());
+
+                    /** Update the original dropdown. */
+                    var selectedItemText = $(this).text();
+                    $originalDropdown.find("option").each(function(key, value) {
+                        if (value.text === selectedItemText) {
+                            $(this).prop('selected', true);
+                        } else {
+                            $(this).prop('selected', false);
+                        }
+                    });
+                    $originalDropdown.change();
+                }
+            });
+
+        });
+    };
+})(jQuery);
+
 /** End of Office UI Fabric Code */ 
+
+/*Pure CSS*/
+(function (window, document) {
+
+    var layout   = document.getElementById('layout'),
+        menu     = document.getElementById('menu'),
+        menuLink = document.getElementById('menuLink');
+
+    function toggleClass(element, className) {
+        var classes = element.className.split(/\s+/),
+            length = classes.length,
+            i = 0;
+
+        for(; i < length; i++) {
+          if (classes[i] === className) {
+            classes.splice(i, 1);
+            break;
+          }
+        }
+        // The className is not found
+        if (length === classes.length) {
+            classes.push(className);
+        }
+
+        element.className = classes.join(' ');
+    }
+
+    menuLink.onclick = function (e) {
+        var active = 'active';
+
+        e.preventDefault();
+        toggleClass(layout, active);
+        toggleClass(menu, active);
+        toggleClass(menuLink, active);
+    };
+
+}(this, this.document));
+
 
 /* My Functions */
 
@@ -168,7 +364,7 @@ function UnmodTimer() {
   document.getElementById("unmod-minutes").disabled = true;
   document.getElementById("unmod-seconds").disabled = true;
 
-  animateIn(jQuery('.unmod-control-buttons'), 'ms-u-slideLeftIn40', 250);
+  animateIn(jQuery('.unmod-control-buttons'), 'ms-u-slideLeftIn40', 400);
 
   document.getElementById("unmod-caucus-button-label").innerHTML = "Stop Unmoderated Caucus";
 
@@ -203,7 +399,7 @@ function unmodEnd(){
   document.getElementById("unmod-minutes").disabled = false;
   document.getElementById("unmod-seconds").disabled = false;
 
-  animateOut(jQuery('.unmod-control-buttons'), 'ms-u-slideRightOut40', 250);
+  animateOut(jQuery('.unmod-control-buttons'), 'ms-u-slideRightOut40', 200);
 
   document.getElementById("unmod-caucus-button-label").innerHTML = "Start Unmoderated Caucus";
   document.getElementById("unmod-caucus-pause-button-label").innerHTML = "Pause";
@@ -260,7 +456,7 @@ function ModTimer() {
   document.getElementById("mod-minutes").disabled = true;
   document.getElementById("mod-seconds").disabled = true;
 
-  animateIn(jQuery('.mod-control-buttons'), 'ms-u-slideLeftIn40', 250);
+  animateIn(jQuery('.mod-control-buttons'), 'ms-u-slideLeftIn40', 400);
 
   document.getElementById("mod-caucus-button-label").innerHTML = "Stop Moderated Caucus";
 
@@ -297,7 +493,7 @@ function modEnd(){
   document.getElementById("mod-minutes").disabled = false;
   document.getElementById("mod-seconds").disabled = false;
 
-  animateOut(jQuery('.mod-control-buttons'), 'ms-u-slideRightOut40', 250);
+  animateOut(jQuery('.mod-control-buttons'), 'ms-u-slideRightOut40', 200);
 
   document.getElementById("mod-caucus-button-label").innerHTML = "Start Moderated Caucus";
   document.getElementById("mod-caucus-pause-button-label").innerHTML = "Pause";
@@ -399,6 +595,12 @@ function helpIn() {
 function helpOut() {
   animateOut(jQuery('#HelpDialog'), 'ms-u-scaleDownOut98', 500);
 }
+function settingsIn() {
+  animateIn(jQuery('#SettingsDialog'), 'ms-u-scaleUpIn100', 500);
+}
+function settingsOut() {
+  animateOut(jQuery('#SettingsDialog'), 'ms-u-scaleDownOut98', 500);
+}
 function VotingIn() {
   if (document.getElementById("voting-choice-1").checked == false && document.getElementById("voting-choice-2").checked == false && document.getElementById("voting-choice-3").checked == false) {
     return;
@@ -426,33 +628,33 @@ function VotingIn() {
 			initRollCallVote();
       logEvents("RollCallVote", "Roll Call Vote started");
     }
-    animateIn(panel, 'ms-u-slideUpIn20', 200);
+    animateIn(panel, 'ms-u-slideUpIn20', 400);
   }, 250);
 }
 
 function SimpleMajorityVoteOut() {
   animateOut(jQuery('#section-SimpleMajority'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 400);
   }, 250);
 }
 
 function ResolutionVoteOut() {
   animateOut(jQuery('#section-ResolutionVote'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 400);
   }, 250);
 }
 
 function RollCallVoteOut() {
   animateOut(jQuery('#section-RollCallVote'), 'ms-u-slideDownOut20', 200);
   setTimeout(function () {
-    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 200);
+    animateIn(jQuery('#voting-radio'), 'ms-u-slideLeftIn40', 400);
   }, 250);
 }
 
 function VotingResultsIn() {
-  animateIn(jQuery('#VotingResultsDialog'), 'ms-u-scaleUpIn100', 500);
+  animateIn(jQuery('#VotingResultsDialog'), 'ms-u-scaleUpIn100', 200);
 }
 function VotingResultsOut() {
   animateOut(jQuery('#VotingResultsDialog'), 'ms-u-scaleDownOut98', 200);
@@ -754,52 +956,102 @@ function doResolutionVote(clickedButton) {
 
 //Pivot Control
 $(document).ready(function(){
-				$(".ms-ListItem").click(function(){
-					$(this).toggleClass("is-selected");
-				});
-				$(".ms-Pivot-link").click(function(){
-					$(".ms-Pivot-link").removeClass("is-selected");
-					$("#tab-voting").addClass("hidden");
-					$("#tab-gsl").addClass("hidden");
-					$("#tab-mod").addClass("hidden");
-					$("#tab-unmod").addClass("hidden");
-					$(this).toggleClass("is-selected");
-				});
-        
-				$("#button-voting").click(function(){
-          animateIn(jQuery('#tab-voting'), 'ms-u-scaleUpIn100', 250);
-				});
-				$("#button-gsl").click(function(){
-          animateIn(jQuery('#tab-gsl'), 'ms-u-scaleUpIn100', 250);
-				});
-				$("#button-mod").click(function(){
-          animateIn(jQuery('#tab-mod'), 'ms-u-scaleUpIn100', 250);
-				});
-				$("#button-unmod").click(function(){
-          animateIn(jQuery('#tab-unmod'), 'ms-u-scaleUpIn100', 250);
-				});
+	$(".pure-menu-item").click(function(){
+		if ($(this).hasClass("KMUNwebsite")){
+			return;
+		}
+		$(".main-navigation").removeClass("pure-menu-selected");	// de-highlight all options
+		$(".star").removeClass("ms-Icon--star");	// remove filled star
+		$(".star").addClass("ms-Icon--starEmpty");	// add empty star
+		$("#welcome").addClass("hidden"); // hide the welcome screen
+		$("#tab-voting").addClass("hidden");
+		$("#tab-gsl").addClass("hidden");
+		$("#tab-mod").addClass("hidden");
+		$("#tab-unmod").addClass("hidden");
+		$("#tab-help").addClass("hidden");
+		$("#tab-about").addClass("hidden");
+		$("#tab-settings").addClass("hidden");
+		if ($(this).hasClass("main-navigation")){
+			$(this).toggleClass("pure-menu-selected");	// highlight only if it is main navigation
+		}
+		$("#layout").removeClass("active");	// auto-close the navigation panel
+	});
+  
+  var sectionAnimation = "ms-u-slideDownIn10";
+	$("#button-voting").click(function(){
+		$("#star1").addClass("ms-Icon--star").removeClass("ms-Icon--starEmpty");
+			animateIn(jQuery('#tab-voting'), sectionAnimation, 400);
+  });
+  $("#button-gsl").click(function(){
+  	$("#star2").addClass("ms-Icon--star").removeClass("ms-Icon--starEmpty");
+    	animateIn(jQuery('#tab-gsl'), sectionAnimation, 400);
+  });
+  $("#button-mod").click(function(){
+  	$("#star3").addClass("ms-Icon--star").removeClass("ms-Icon--starEmpty");
+    	animateIn(jQuery('#tab-mod'), sectionAnimation, 400);
+  });
+  $("#button-unmod").click(function(){
+  	$("#star4").addClass("ms-Icon--star").removeClass("ms-Icon--starEmpty");
+    	animateIn(jQuery('#tab-unmod'), sectionAnimation, 400);
+  });
+  $("#button-help").click(function(){
+  	$('#tab-help').removeClass("hidden");
+  	$('#help-header').fadeTo(0, 0);
+  	$('#help-content').fadeTo(0, 0);
+  	setTimeout(function(){
+  		animateIn(jQuery('#help-header'), "ms-u-slideUpIn20", 500);
+  		animateIn(jQuery('#help-content'), "ms-u-slideDownIn20", 500);
+  		$('#help-header').fadeTo(0, 1);
+  		$('#help-content').fadeTo(0, 1);
+  	}, 100);
+  });
+  $("#button-about").click(function(){
+    	$('#tab-about').removeClass("hidden");
+    	$('#about-header').fadeTo(0, 0);
+    	$('#about-content').fadeTo(0, 0);
+    	setTimeout(function(){
+    		animateIn(jQuery('#about-header'), "ms-u-slideUpIn20", 500);
+    		animateIn(jQuery('#about-content'), "ms-u-slideDownIn20", 500);
+    		$('#about-header').fadeTo(0, 1);
+    	$('#about-content').fadeTo(0, 1);
+    	}, 100);
+  });
+  $("#button-settings").click(function(){
+  	$('#tab-settings').removeClass("hidden");
+  	$('#settings-header').fadeTo(0, 0);
+  	$('#settings-content').fadeTo(0, 0);
+  	setTimeout(function(){
+  		animateIn(jQuery('#settings-header'), "ms-u-slideUpIn20", 500);
+  		animateIn(jQuery('#settings-content'), "ms-u-slideDownIn20", 500);
+  		$('#settings-header').fadeTo(0, 1);
+  		$('#settings-content').fadeTo(0, 1);
+  	}, 100);
+  });
+
+  $("#headerArea").click(function(){
+  	$("#layout").removeClass("active");
+  	if ($("#welcome").hasClass("hidden")) {
+  		// show the welcome screen
+  		animateIn(jQuery('#welcome'), 'ms-u-fadeIn500', 500);
+  		// hide other sections
+  		$("#tab-voting").addClass("hidden");
+  		$("#tab-gsl").addClass("hidden");
+  		$("#tab-mod").addClass("hidden");
+  		$("#tab-unmod").addClass("hidden");
+  		$("#tab-help").addClass("hidden");
+  		$("#tab-about").addClass("hidden");
+  		$("#tab-settings").addClass("hidden");
+  		$(".main-navigation").removeClass("pure-menu-selected");	// de-highlight all options
+  		$(".star").removeClass("ms-Icon--star");	// remove filled star
+			$(".star").addClass("ms-Icon--starEmpty");	// add empty star
+  	}
+  });
 });
 
-// Animate page elements when loaded
-// $(document).ready(function(){
-// 	$('.loadingBar').animate({
-// 		width: '80%'
-// 	}, 3000);
-// 	$('.loadingBar').animate({
-// 		width: '100%'
-// 	}, 200);
-// 	$('.loadingBar').animate({
-// 		opacity: 0
-// 	}, 200);
-// 	$('.ms-NavBar').hide(0).delay(500).slideDown(1000);
-// 	$('#agenda').hide(0).delay(1000).fadeIn(1500);
-// 	$('.tabs').hide(0).delay(1800).slideDown(500);
-// 	$('hr').hide(0).delay(2000).fadeIn(200);
-// });
-
-// $(document).ready(function(){
-// 	$('body').css({opacity: 1});
-// });
+// fade in when page loads
+$(document).ready(function(){
+	$('body').fadeIn("slow");
+});
 
 // For autocomplete function
 $(function(){
@@ -832,7 +1084,7 @@ document.getElementById("CurrentAgendaField").addEventListener("focusout", agend
 function agendaBlur() {
   // store state
   var store = db.transaction("StoreFields", "readwrite").objectStore("StoreFields");
-  store.put({fieldName: "currentAgenda", fieldValue: document.getElementById("CurrentAgendaField").value});
+  store.put(document.getElementById("CurrentAgendaField").value, "currentAgenda");
 
   logEvents("general", "Current agenda has been set to " + document.getElementById("CurrentAgendaField").value);
 }
@@ -842,21 +1094,32 @@ function agendaFocus() {
   var request = store.get("currentAgenda");
 
   request.onsuccess = function() {
-    document.getElementById("CurrentAgendaField").value = request.result.fieldValue;
+    document.getElementById("CurrentAgendaField").value = request.result;
   }
 }
 
+// Create the indexedDB database
 
-var request = indexedDB.open("test100");
+var request = indexedDB.open("test100", 3);
 
 request.onupgradeneeded = function(event) {
   // The database did not previously exist, so create object stores and indexes.
-  var store = request.result.createObjectStore("StoreFields", {keyPath: "fieldName"});
-  var fields = store.createIndex("fieldValue", "fieldValue");
-  var logs = request.result.createObjectStore("Log", {keyPath: "id", autoIncrement: true});
+  if (event.oldVersion < 1) {
+    var store = request.result.createObjectStore("StoreFields");
+    // var fields = store.createIndex("fieldValue", "fieldValue");
+    var logs = request.result.createObjectStore("Log", {keyPath: "id", autoIncrement: true});
 
-  var sampleItem = { category: "general", date: Date(), string: "Database created" };
-  logs.add(sampleItem);
+    var sampleItem = { category: "general", date: Date(), string: "Database created" };
+    logs.add(sampleItem);
+  }
+  if (event.oldVersion < 2) {
+    var details = request.result.createObjectStore("Details");
+    //var val = details.createIndex("detailValue", "detailValue");
+
+    // var sampleItem = { detailName: "logID", detailValue: 0 };
+    details.add(0, "logSavedID");
+  }
+  var flags = request.result.createObjectStore("Flags");
 };
 
 request.onsuccess = function() {
@@ -891,18 +1154,18 @@ function logRollCallVote() {
     str += activeList[i][0] + " is ";
     if (activeList[i][2] == 1) {
       option1++;
-      str += "Present & Voting";
+      str += "Present and Voting\n";
     }
     else if (activeList[i][2] == 2) {
       option2++;
-      str += "Present";
+      str += "Present\n";
     }
     else {
       option3++;
-      str += "Absent";
+      str += "Absent\n";
     }
   }
-  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Present & Voting: " + option1 + ", Present: " + option2 + ", Absent: " + option3;
+  str += "Total Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Present and Voting: " + option1 + ", Present: " + option2 + ", Absent: " + option3;
   logEvents("RollCallVote", str);
 }
 
@@ -913,18 +1176,18 @@ function logSimpleMajorityVote() {
     str += activeList[i][0];
     if (activeList[i][4] == 1) {
       option1++;
-      str += "voted Yes";
+      str += "voted Yes\n";
     }
     else if (activeList[i][4] == 2) {
       option2++;
-      str += "voted No";
+      str += "voted No\n";
     }
     else {
       option3++;
-      str += "Abstained";
+      str += "Abstained\n";
     }
   }
-  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Abstained: " + option3;
+  str += "Total Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Abstained: " + option3;
   logEvents("SimpleMajorityVote", str);
 }
 
@@ -935,25 +1198,211 @@ function logResolutionVote() {
     str += activeList[i][0];
     if (activeList[i][5] == 1) {
       option1++;
-      str += "voted Yes";
+      str += "voted Yes\n";
     }
     else if (activeList[i][5] == 2) {
       option2++;
-      str += "voted No";
+      str += "voted No\n";
     }
     else if (activeList[i][5] == 3) {
       option3++;
-      str += "voted Yes with Rights";
+      str += "voted Yes with Rights\n";
     }
     else if (activeList[i][5] == 4) {
       option4++;
-      str += "voted No with Rights";
+      str += "voted No with Rights\n";
     }
     else {
       option5++;
-      str += "Abstained";
+      str += "Abstained\n";
     }
   }
-  str += "\nTotal Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3) + parseInt(option4) + parseInt(option5)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Yes with Rights: " + option3 + ", No with Rights: " + option4 + ", Abstained: " + option5;
+  str += "Total Votes: " + (parseInt(option1) + parseInt(option2) + parseInt(option3) + parseInt(option4) + parseInt(option5)).toString() + ", Yes: " + option1 + ", No: " + option2 + ", Yes with Rights: " + option3 + ", No with Rights: " + option4 + ", Abstained: " + option5;
   logEvents("ResolutionVote", str);
 }
+
+function SaveLog() {
+  var logSavedID = 0, logDone=0;
+
+  // retrieve logSavedID from local DB
+  var objStore = db.transaction("Details", "readonly").objectStore("Details");
+  var req = objStore.get("logSavedID");
+  req.onsuccess = function() {
+    logSavedID = req.result;
+  }
+
+  var store = db.transaction("Log").objectStore("Log");
+  var myData = "mode=app&string=";
+  store.openCursor().onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (cursor) {
+      if (cursor.value.id > logSavedID) { // Only add the logs which have not already been saved
+        myData += cursor.value.date + " | " + cursor.value.category + " | " + cursor.value.string + "\n";
+      }
+      logDone = cursor.value.id;  // id upto which logs which have been added
+      cursor.continue();
+    }
+    else { 
+      // Save to file
+      request = $.ajax({
+        url: "log.php",
+        type: "post",
+        data: myData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+        // Log a message to the console
+        alert("Hooray, it worked!");
+        logSavedID = logDone;  // Logs have been saved upto logDone
+        // Save the logID to the local DB
+        var objStore = db.transaction("Details", "readwrite").objectStore("Details");
+        objStore.put(logSavedID, "logSavedID");
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+        // Log the error to the console
+        alert("The following error occurred: ");
+      });
+
+      // Callback handler that will be called regardless if the request failed or succeeded
+      // request.always(function () {
+      //   // Reenable the inputs
+      //   alert("Complete");
+      // });
+    } 
+  };
+}
+
+// Load flags
+function LoadFlag(flagName){
+	// Create XHR
+	var xhr = new XMLHttpRequest(), blob;
+
+	var path = "./flags/" + flagName + ".png";
+	xhr.open("GET", path, true);
+	// Set the responseType to blob
+	xhr.responseType = "blob";
+
+	xhr.addEventListener("load", function () {
+		if (xhr.status === 200) {
+			console.log("Image retrieved");
+		
+			// File as response
+			blob = xhr.response;
+			console.log("Blob:" + blob);
+
+			console.log("Putting flag in IndexedDB");
+
+			// Open a transaction to the database
+			var tx = db.transaction("Flags", "readwrite");
+
+			// Put the blob into the dabase
+			var put = tx.objectStore("Flags").put(blob, flagName);
+		}
+	}, false);
+	// Send XHR
+	xhr.send();
+}
+
+$(document).ready(function(){
+	setTimeout(function(){
+		for (i in masterList) {
+			LoadFlag(masterList[i]);
+		}
+	}, 200);
+})
+
+// // Load flags to database
+// $(document).ready(function() {
+// 	setTimeout(function(){
+// 		// Create XHR
+// 		var xhr = new XMLHttpRequest(),
+// 		    blob;
+
+// 		xhr.open("GET", "India.png", true);
+// 		// Set the responseType to blob
+// 		xhr.responseType = "blob";
+
+// 		xhr.addEventListener("load", function () {
+// 		    if (xhr.status === 200) {
+// 		        console.log("Image retrieved");
+		        
+// 		        // File as response
+// 		        blob = xhr.response;
+// 		        console.log("Blob:" + blob);
+
+// 		        console.log("Putting flag in IndexedDB");
+
+// 		            // Open a transaction to the database
+// 		            var tx = db.transaction("Flags", "readwrite");
+
+// 		            // Put the blob into the dabase
+// 		            var put = tx.objectStore("Flags").put(blob, "India");
+
+// 		            // Retrieve the file that was just stored
+// 		            tx.objectStore("Flags").get("India").onsuccess = function (event) {
+// 		              var imgFile = event.target.result;
+// 		              console.log("Got flag!" + imgFile);
+
+// 		              // Get window.URL object
+// 		              var URL = window.URL || window.webkitURL;
+
+// 		              // Create and revoke ObjectURL
+// 		               var imgURL = URL.createObjectURL(imgFile);
+
+// 		              // Set img src to ObjectURL
+// 		              var imgFlag = document.getElementById("headerImage");
+// 		              var link = "url(" + imgURL + ")";
+// 		              $('#flag').css('background-image', link);
+
+// 		              // Revoking ObjectURL
+// 		              imgFlag.onload = function() {
+//                     window.URL.revokeObjectURL(this.src);
+//                 }
+// 		            };
+// 		    }
+// 		}, false);
+// 		// Send XHR
+// 		xhr.send();
+// 	}, 250);
+// });
+
+// Connectivity status
+var connectivityErrors = 0;	// Ensures that just a single error on a good connection does not show 'No Internet'
+$(document).ready(function(){
+	setInterval(function(){
+		var myData="0";
+		request = $.ajax({
+			url: "connectivity.php",
+			type: "post",
+			data: myData
+		});
+		// Internet connected, server accessible
+		request.done(function (response, textStatus, jqXHR){
+			connectivityErrors = 0;	// Reset counter
+			if (response == "1"){	// Everything OK
+				$("#status-icon").css("color", "#006600");	// Green
+				$("#status-text").html(" OK");
+			}
+			else if (response == "0"){	// SQL Error
+				$("#status-icon").css("color", "#FF0000");	// Red
+				$("#status-text").html(" SQL Error");
+			}
+			else {	// PHP Error
+				$("#status-icon").css("color", "#FF0000");	// 	Red
+				$("#status-text").html(" PHP Error");
+			}
+		});
+
+		// Not connected to internet or server down
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			if (connectivityErrors > 1){
+				$("#status-icon").css("color", "#FFCC00");	// Yellow
+				$("#status-text").html(" No Internet");
+			}
+			connectivityErrors++;	// Increment counter
+		});
+	}, 4000);
+})

@@ -1,9 +1,123 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8">
 		<title>Manual | MUN Moderator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="fabric.min.css" type="text/css" rel="stylesheet" />
+		<link href="fabric.components.min.css" type="text/css" rel="stylesheet" />
+		<style type="text/css">
+			html, body {
+				margin: 0;
+			}
+			
+			.header {
+				width: 100%;
+				height: auto;
+				text-align: center;
+				vertical-align: middle;
+			}
+			#headerImage {
+				height: 40px;
+				min-width: 40px;
+				background-image: url("logoSmall.png");
+				background-repeat: no-repeat;
+				background-size: contain;
+				background-position: center;
+			}
+			#mainImage {
+				height: 200px;
+				background-image: url("logoSmall.png");
+				background-repeat: no-repeat;
+				background-size: contain;
+				background-position: center;
+			}
+		</style>
 	</head>
 	<body>
-		Nothing here yet!
+		<div class="ms-NavBar" id="navbar">
+			<div class="ms-NavBar-openMenu js-openMenu">
+				<i class="ms-Icon ms-Icon--menu"></i>
+			</div>
+			<ul class="ms-NavBar-items">
+				<li class="ms-NavBar-item is-disabled">
+					<div id="headerImage"></div>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#">Home</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#about">About</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#features">Features</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#voting">Voting and Roll Call</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#gsl">General Speakers List</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#modCaucus">Moderated Caucus</a>
+				</li>
+				<li class="ms-NavBar-item">
+					<a class="ms-NavBar-link" href="#unmodCaucus">Unmoderated Caucus</a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="header ms-bgColor-neutralLighter" id="home">
+			<div class="header-items">
+				<div style="padding: 2em;">
+					<div id="mainImage"></div>
+					<div class="ms-font-su ms-fontColor-themePrimary">User Manual</div>
+					<div class="ms-font-xxl ms-fontColor-neutralPrimary">MUN Moderator 2016</div>
+				</div>
+			</div>
+		</div>
+		<div class="ms-Grid"> 
+		 	<div class="ms-Grid-row" id="about" style="padding: 1.5em;">
+		 		<div class="ms-Grid-col ms-u-sm12">
+		 			<div class="ms-font-xxl ms-fontColor-themePrimary" style="margin-bottom: 0.3em;">
+		 				About
+		 			</div>
+		 			<div class="ms-font-l">
+		 				MUN Moderator is a set of Web Applications built specially for Kumarans Model United Nations by the KMUN Tech Team. It is built completely on web technologies to enable moderators to easily monitor and assist in committee proceedings by using any device with a modern browser. MUN Moderator 2016 can also provide detailed statistics and scoring reports for each delegate. It takes MUN software to the next-level.
+		 			</div>
+		 		</div>
+		 	</div>
+		 	<div class="ms-Grid-row" id="features" style="padding: 1.5em;">
+		 		<div class="ms-Grid-col ms-u-sm12">
+		 			<div class="ms-font-xxl ms-fontColor-themePrimary" style="margin-bottom: 0.3em;">
+		 				Features
+		 			</div>
+		 			<div class="ms-font-l">
+		 				MUN Moderator 2016 features many features to make managing a MUN session a breeze.
+		 				<ul>
+		 					<li>Completely web-based and platform independent - Even works on tablets and phones</li>
+		 					<li>Simple and easy to use with a good design</li>
+		 					<li>Integrated with live crisis feed</li>
+		 					<li>Works offline and syncs when there is internet connectivity</li>
+		 					<li>Statistics for easy scoring of delegates and analysis of sessions</li>
+		 					<li>Caucus, GSL and Voting management</li>
+		 				</ul>
+		 			</div>
+		 		</div>
+		 	</div>
+		 	<div class="ms-Grid-row" id="voting" style="padding: 1.5em;">
+		 		<div class="ms-Grid-col ms-u-sm12">
+		 			<div class="ms-font-xxl ms-fontColor-themePrimary">
+		 				Voting and Roll Call
+		 			</div>
+		 			<div class="ms-font-l">
+		 				Voting and roll call is simple to use. Select the required radio button in the "Voting" tab and click "Start Vote!". Roll Call needs to be done before Simple Majority and Resolution Vote can be done.
+		 			</div>	
+		 		</div>
+		 	</div>
+		</div>
+
+		<script type="text/javascript" src="jquery.min.js"></script>
+		<script type="text/javascript" src="manual.js"></script>
 	</body>
 </html>

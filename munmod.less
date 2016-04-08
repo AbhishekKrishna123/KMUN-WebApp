@@ -1,0 +1,584 @@
+/* 
+munmod.less
+For MUN Moderator Web App
+*/
+
+@KMUNblue: #0078D7;
+@KMUNgold: #D69D36;
+@KMUNred: #960000;
+
+/*
+Styling for the structural components
+*/
+body {
+	font-weight: 400;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 14px;
+	min-width: 600px;	/*for usability on mobile and narrow screens*/
+	// display: none;
+}
+hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #eeeeee;
+	margin-left: 2em;
+	margin-right: 2em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	padding: 0;
+}
+.opacityZero {
+	opacity: 0;
+}
+
+.centerText {
+	text-align: center;
+}
+
+.hidden {
+	display: none;
+}
+
+#headerArea {
+	height: 49px;
+}
+#headerImage {
+	height: 49px;
+	min-width: 49px;
+	background-image: url("logoSmall.png");
+	background-repeat: no-repeat;
+	background-size: 40px 40px;
+	background-position: center;
+	display: inline-block;
+	float: left;
+}
+#welcomeImage {
+	height: 200px;
+	min-width: 200px;
+	background-image: url("logoSmall.png");
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	opacity: 0.4;
+}
+
+#top-bar {
+	z-index: 500;
+	height: 50px;
+	width: 100%;
+	background-color: #000000;
+	color: #d69d36;
+	border-bottom: 1px solid @KMUNgold;
+	cursor: default;
+	position: fixed;
+	left: 0;
+	top: 0;
+}
+#status-bar {
+	font-size: 10px;
+	padding-top: 15px;
+	padding-right: 15px;
+	float: right;
+}
+#status-bar i {
+	font-size: 10px;
+}
+
+#committeeName {
+	color: #d69d36;
+	padding-top: 15px;
+	padding-left: 220px;
+	position: absolute;
+}
+
+#sessionSelector {
+	width: 100px;
+	height: 30px;
+	padding-top: 10px;
+	padding-left: 350px;
+	position: absolute;
+}
+
+#agenda {
+	padding-top: 4em;
+}
+
+#CurrentAgendaField {
+	color: #0078D7;
+	font-size: 1em;
+}
+
+#welcome {
+	text-align: center;
+	padding-top: 5em;
+}
+
+/*For the jQuery UI autocomplete text fields*/
+.autocomplete-suggestions { 
+	width: 300px;
+	border: 1px solid #cccccc;
+	background: #ffffff;
+	min-height: 0px;
+	max-height: 30px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.autocomplete-suggestion {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.autocomplete-selected { 
+	background: #dddddd;
+}
+.autocomplete-suggestions strong { 
+	color: #0078D7;
+}
+
+
+.flag {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1em;
+	height: 6em;
+	width: 9em;
+	background-image: url('logoSmall.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	border: 1px solid #eee;
+}
+
+.material-icons {
+	font-size: 16px;
+	margin-top: 4px;
+}
+
+
+#loading {
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	padding-top: 45vh;
+	background-color: #ddd;
+	z-index: 10000;
+}
+
+/*
+    When creating your CSS selector,
+    change "brown" to something of your choosing
+    */
+    .waves-effect.waves-gold .waves-ripple {
+     /* The alpha value allows the text and background color
+     of the button to still show through. */
+      background-color: rgba(214, 157, 54, 0.65);
+    }
+          
+ /* label color */
+   .input-field label {
+     color: #000;
+   }
+   /* label focus color */
+   .input-field input[type=text]:focus + label {
+     color: @KMUNblue;
+   }
+   /* label underline focus color */
+   .input-field input[type=text]:focus {
+     border-bottom: 1px solid @KMUNblue;
+     box-shadow: 0 1px 0 0 @KMUNblue;
+   }
+   /* valid color */
+   .input-field input[type=text].valid {
+     border-bottom: 1px solid #9e9e9e;
+     box-shadow: 0 0px 0 0 @KMUNblue;
+   }
+   /* invalid color */
+   .input-field input[type=text].invalid {
+     border-bottom: 1px solid @KMUNred;
+     box-shadow: 0 1px 0 0 @KMUNred;
+   }
+   /* icon prefix focus color */
+   .input-field .prefix.active {
+     color: @KMUNblue
+   }
+
+   /* label focus color */
+   .input-field input[type=number]:focus + label {
+     color: @KMUNblue;
+   }
+   /* label underline focus color */
+   .input-field input[type=number]:focus {
+     border-bottom: 1px solid @KMUNblue;
+     box-shadow: 0 1px 0 0 @KMUNblue;
+   }
+   /* valid color */
+   .input-field input[type=number].valid {
+     border-bottom: 1px solid #9e9e9e;
+     box-shadow: 0 0px 0 0 @KMUNblue;
+   }
+   /* invalid color */
+   .input-field input[type=number].invalid {
+     border-bottom: 1px solid @KMUNred;
+     box-shadow: 0 1px 0 0 @KMUNred;
+   }
+
+/* To fix label alignment in input fields */
+.input-field label {
+	left: 0;
+}
+
+.font-weight-light {
+	font-weight: 300;
+}
+
+.btn {
+	margin: 0.4rem;
+}
+
+.blue {
+	background-color: @KMUNblue !important;
+	// background-color: @KMUNblue;
+}
+// .blue-text {
+// 	color: @KMUNblue;
+// }
+
+/*Pure CSS Styling*/
+
+/*Add transition to containers so they can push in and out.*/
+#layout,
+#menu,
+.menu-link {
+	z-index: 1000;
+	-webkit-transition: all 0.2s ease-out;
+	-moz-transition: all 0.2s ease-out;
+	-ms-transition: all 0.2s ease-out;
+	-o-transition: all 0.2s ease-out;
+	transition: all 0.2s ease-out;
+}
+
+/*
+This is the parent `<div>` that contains the menu and the content area.
+*/
+#layout {
+	position: relative;
+	padding-left: 0;
+}
+#layout.active #menu {
+	left: 200px;
+	width: 200px;
+}
+
+#layout.active .menu-link {
+	left: 200px;
+}
+
+/*
+The `#menu` `<div>` is the parent `<div>` that contains the `.pure-menu` that
+appears on the left side of the page.
+*/
+#menu {
+	margin-left: -200px; /* "#menu" width */
+	width: 200px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 1000; /* so the menu or its navicon stays above all content */
+	background: #000000;
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+/*
+Remove all background/borders, since we are applying them to #menu.
+*/
+#menu .pure-menu,
+#menu .pure-menu ul {
+	border: none;
+	/*background: transparent;*/
+}
+.pure-menu-item {
+	color: #000000;
+	border: none;
+	padding: 0.4em 0.2em 0.4em 0.2em;
+	min-width: 200px;
+}
+
+/*
+Add that light border to separate items into groups.
+*/
+#menu .pure-menu ul,
+#menu .pure-menu .menu-item-divided {
+	border-top: 1px solid #d69d36;
+}
+
+/*
+Change color of the anchor links on hover/focus.
+*/
+.pure-menu-item:hover,
+.pure-menu-item:focus {
+	background: #222222;
+	cursor: default;
+}
+#menu .pure-menu li a:hover,
+#menu .pure-menu li a:focus {
+	background: transparent;
+}
+#menu .pure-menu-item a,
+#menu .pure-menu-item a {
+	color: #aaaaaa;
+}
+#menu .other-nav-items a {
+	color: #0078D7;
+}
+
+/*
+This styles a link within a selected menu item `<li>`.
+*/
+#menu .pure-menu-selected {
+  	// background-color: rgba(0, 120, 215, 0.4);
+  	border-left: 8px solid @KMUNgold;
+  	box-sizing: border-box;
+  	font-size: 14px;
+}
+#menu .pure-menu-selected a{
+  	color: #d69d36;
+}
+
+/*
+menu item font size
+*/
+.pure-menu-item {
+	font-size: 0.9em;
+	height: 3.4em;
+}
+
+/*
+This styles the menu heading.
+*/
+#menu .pure-menu-heading {
+	cursor: default;
+	color: rgba(14,113,195,1);
+	margin: 0;
+	height: 30px;
+	padding-top: 15px;
+	padding-bottom: 5px;
+	text-transform: capitalize;
+}
+
+/* -- Dynamic Button For Responsive Menu -------------------------------------*/
+/*
+The button to open/close the Menu is custom-made and not part of Pure. Here's how it works:
+*/
+
+/*
+`.menu-link` represents the responsive menu toggle that shows/hides on
+small screens.
+*/
+.menu-link {
+	position: fixed;
+	display: block; /* show this only on small screens */
+	top: 0;
+	left: 0; /* "#menu width" */
+	background: #000000;
+	/*background: rgba(0,0,0,0.05);*/
+	font-size: 11.2px; /* change this value to increase/decrease button size */
+	width: 2em;
+	height: auto;
+	padding: 2.1em 1.6em;
+	box-sizing: content-box;
+}
+
+.menu-link span {
+	position: relative;
+	display: block;
+}
+
+.menu-link span,
+.menu-link span:before,
+.menu-link span:after {
+	background-color: #0078D7;
+	width: 100%;
+	height: 0.2em;
+}
+
+.menu-link span:before,
+.menu-link span:after {
+	position: absolute;
+	margin-top: -0.6em;
+	content: " ";
+}
+
+.menu-link span:after {
+	margin-top: 0.6em;
+}
+
+
+/* -- Responsive Styles (Media Queries) ------------------------------------- */
+
+/*
+Hides the menu at `48em`, but modify this based on your app's needs.
+*/
+@media (min-width: 60em) {
+	.header,
+	.content {
+		padding-left: 2em;
+		padding-right: 2em;
+	}
+	#layout {
+		padding-left: 200px; /* left col width "#menu" */
+		left: 0;
+	}
+	#menu {
+		left: 200px;
+	}
+	.menu-link {
+		position: fixed;
+		left: 200px;
+		display: none;
+	}
+	#layout.active .menu-link {
+		left: 200px;
+	}
+
+}
+
+@media (max-width: 60em) {
+/* Only apply this when the window is small. Otherwise, the following
+case results in extra padding on the left:
+	* Make the window small.
+	* Tap the menu to trigger the active state.
+	* Make the window large again.*/
+	
+	#layout.active {
+		position: relative;
+		left: 200px;
+	}
+
+	#committeeName {
+		padding-left: 60px;
+	}
+}
+
+/*my-List Styling*/
+.my-List {
+	box-sizing: border-box;
+	-webkit-user-select: none;  
+  	-moz-user-select: none;
+  	-ms-user-select: none;  
+  	user-select: none;
+  	cursor: default;
+  	// margin: 2em;
+}
+.my-ListItem {
+	height: 3em;
+	display: block;
+	box-sizing: border-box;	/*padding is calculated inside the dimensions of the element so that they do not vary because of padding*/
+	margin-left: 1em;
+	margin-right: 1em;
+}
+.my-ListItem:hover,
+.my-ListItem:active {
+	background-color: #eeeeee;
+}
+.my-ListItem-Button1-Text:hover,
+.my-ListItem-Button1-Text:active {
+	background-color: #960000;
+	color: #ffffff;
+}
+.my-ListItem-Button2-Text:hover,
+.my-ListItem-Button2-Text:active {
+	background-color: #2B88D8;
+	color: #ffffff;
+}
+.my-ListItem-Button3-Text:hover,
+.my-ListItem-Button3-Text:active {
+	background-color: @KMUNgold;
+	color: #ffffff;
+}
+.my-ListItem-Text {
+	padding: 0.7em 0em 0.7em 1em;
+	height: 100%;
+	min-width: 10em;
+	width: 39%;
+	display: inline-block;
+	text-align: left;
+	background-color: transparent;
+	box-sizing: border-box;
+	color: #333;
+}
+.my-ListItem-Button1-Text {
+	padding: 0.7em 0.3em 0.7em 0.3em;
+	height: 100%;
+	// min-width: 8em;
+	width: 18%;
+	display: inline-block;
+	text-align: center;
+	float: right;
+	box-sizing: border-box;
+	color: #960000;
+}
+.my-ListItem-Button2-Text {
+	padding: 0.7em 0.3em 0.7em 0.3em;
+	height: 100%;
+	// min-width: 8em;
+	width: 18%;
+	display: inline-block;
+	text-align: center;
+	float: right;
+	box-sizing: border-box;
+	color: #2B88D8;
+}
+.my-ListItem-Button3-Text {
+	padding: 0.7em 0.3em 0.7em 0.3em;
+	height: 100%;
+	// min-width: 8em;
+	width: 25%;
+	display: inline-block;
+	text-align: center;
+	float: right;
+	box-sizing: border-box;
+	color: @KMUNgold;
+}
+
+.my-ListItem-Text-selected-1 {
+	// background-color: #960000;
+	color: #960000;
+	border-left: 7px solid #960000;
+}
+.my-ListItem-Text-selected-2 {
+	// background-color: #2B88D8;
+	color: #2B88D8;
+	border-left: 7px solid #2B88D8;
+}
+.my-ListItem-Text-selected-3 {
+	// background-color:  #005A9E;
+	color: @KMUNgold;
+	border-left: 7px solid @KMUNgold;
+}
+
+.my-ListItem-Button1-selected {
+	background-color: #960000;
+	color: #fff;
+}
+.my-ListItem-Button2-selected {
+	background-color: #2B88D8;
+	color: #fff;
+}
+.my-ListItem-Button3-selected {
+	background-color: @KMUNgold;
+	color: #fff;
+}
+
+#button-rollCallReset {
+	font-size: 1em;
+	margin-left: auto;
+	margin-right: auto;
+}

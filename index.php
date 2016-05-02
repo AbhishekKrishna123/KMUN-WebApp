@@ -129,14 +129,19 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 
 			<div id="main">
 				<div id="top-bar" class="z-depth-2">
-					<div id="status-bar">Connectivity Status <a id="status-icon"><i class="fa fa-circle"></i><span id="status-text"></span></a></div>
+					<div id="status-bar">Connectivity <a id="status-icon"><i class="fa fa-circle"></i><span id="status-text"></span></a></div>
 					<div id="committeeName">Committee Name</div>
-					<div class="input-field" id="sessionSelector">
-						<select>
-							<option value="" selected>Select Session</option>
-							<option value="1">Session 1</option>
-							<option value="2">Session 2</option>
-							<option value="3">Session 3</option>
+					<div class="input-field" id="sessionSelectorDiv">
+						<select id="sessionSelector" onchange="sessionSelect()" class="browser-default">
+							<option value="" selected disabled>Session #</option>
+							<option value="session1">Session 1</option>
+							<option value="session2">Session 2</option>
+							<option value="session3">Session 3</option>
+							<option value="session4">Session 4</option>
+							<option value="session5">Session 5</option>
+							<option value="session6">Session 6</option>
+							<option value="session7">Session 7</option>
+							<option value="session8">Session 8</option>
 						</select>
   					</div>
 				</div>
@@ -144,7 +149,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 				<!-- Agenda -->
 				<div class="container hidden" id="agenda">
 					<div class="input-field" id="agenda-field">
-						<input id="CurrentAgendaField" type="text">
+						<input id="CurrentAgendaField" type="text" value="Destroy the world by starting World War 3!">
 						<label for="CurrentAgendaField">Current&nbsp;Agenda</label>
 					</div>
 				</div>
@@ -157,278 +162,420 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 
 				<!-- Roll Call Tab -->
 				<div class=" hidden centerText" id="tab-RollCall">
-					<h5 class="blue-text text-darken-2 centerText font-weight-light">Roll Call</h5>
-					<a class="waves-effect waves-blue btn-flat" id="button-rollCallReset" onclick="resetRollCall()">Reset Roll</a>
-					<!-- <div class="grey-text text-lighten-1"  >Clear All</divider> -->
-					<div class="my-List container" id="list-rollCall"></div>
+					<div class="sectionHeading">Roll Call</div>
+
+					<hr class="separator">
+
+					<!-- Roll Call Status -->
+					<div id="rollCallStatus" class="row">
+						<div class="rollCallStatus-property col s2 offset-s2">
+							<div class="rollCallStatus-propertyName">Total</div>
+							<div class="rollCallStatus-propertyValue" id="rollCallStatus-total"></div>
+						</div>
+						<div class="rollCallStatus-property col s2"> 
+							<div class="rollCallStatus-propertyName">Absent</div>
+							<div class="rollCallStatus-propertyValue" id="rollCallStatus-absent"></div>
+						</div>
+						<div class="rollCallStatus-property col s2">
+							<div class="rollCallStatus-propertyName">Present</div>
+							<div class="rollCallStatus-propertyValue" id="rollCallStatus-present"></div>
+						</div>
+						<div class="rollCallStatus-property col s2">
+							<div class="rollCallStatus-propertyName">Present & Voting</div>
+							<div class="rollCallStatus-propertyValue" id="rollCallStatus-presentAndVoting"></div>
+						</div>
+					</div>
+
+					<a class="waves-effect waves-gold btn-flat" onclick="rollCallAbsent()">Absent</a>
+					<a class="waves-effect waves-gold btn-flat" onclick="rollCallPresent()">Present</a>
+					<a class="waves-effect waves-gold btn-flat" onclick="rollCallPresentAndVoting()">Present & Voting</a>
+
+					<div class="rollCallList container" id="list-rollCall"></div>
 				</div>
 
 				<!-- Voting Tab -->
 				<div class="hidden centerText" id="tab-voting">
-					<h5 class="blue-text text-darken-2 centerText font-weight-light">Voting</h5>
+					<div class="sectionHeading">Voting</div>
+
+					<hr class="separator">
+
 					<div id="voting-main" class="hidden">
-						<h6 class="blue-text" id="votingLabel-delegate">DelegateName</h6>
-						<div>
+						<div id="votingLabel-delegate">DelegateName</div>
+						<div id="votingLabel-serialNumber">
 							<p class="grey-text text-lighten-1" style="display: inline;" id="votingLabel-current">x</p>
 							<p class="grey-text text-lighten-1" style="display: inline;">&nbsp;of&nbsp;</p>
 							<p class="grey-text text-lighten-1" style="display: inline;" id="votingLabel-max">y</p>
 						</div>
-						<div class="">
-							<button class="waves-effect waves-light btn blue" id="votingButton-1" onClick="votingControlButton(this)">Yes</button>
-							<button class="waves-effect waves-light btn blue" id="votingButton-2" onClick="votingControlButton(this)">No</button>
-							<button class="waves-effect waves-light btn blue" id="votingButton-3" onClick="votingControlButton(this)">Abstain</button>
-							<button class="waves-effect waves-light btn blue" id="votingButton-4" onClick="votingControlButton(this)">Pass</button>
+						<div>
+							<button class="waves-effect waves-light btn blue votingControlButtons" id="votingButton-1" onClick="votingControlButton(this)">Yes</button>
+							<button class="waves-effect waves-light btn blue votingControlButtons" id="votingButton-2" onClick="votingControlButton(this)">No</button>
+							<button class="waves-effect waves-light btn blue votingControlButtons" id="votingButton-3" onClick="votingControlButton(this)">Abstain</button>
+							<button class="waves-effect waves-light btn blue votingControlButtons" id="votingButton-4" onClick="votingControlButton(this)">Pass</button>
 						</div>
 					</div>
 
 					<div id="voting-results" class="centerText hidden">
-						<h6 class="blue-text" id="votingLabel-delegate">Voting Result</h6>
-						<div>
-							<span>Yes </span>
-							<span class="blue-text text-lighten-1" id="votingLabel-yes">x</span>
-						</div>
-						<div>
-							<span>No </span>
-							<span class="blue-text text-lighten-1" id="votingLabel-no">x</span>
-						</div>
-						<div>
-							<span>Abstain </span>
-							<span class="blue-text text-lighten-1" id="votingLabel-abstain">x</span>
-						</div>
-						<div>
-							<span>Perentage </span>
-							<span class="blue-text text-lighten-1" id="votingLabel-percent">x</span>
-						</div>
-						<div>
-							<span>Result </span>
-							<span class="blue-text text-lighten-1" id="votingLabel-statement">x</span>
+						<div class="subHeading">Voting Result</div>
+
+						<div class="row">
+							<div class="col s12 m8 rightText">
+								<div class="row votingResults-row">
+									<div class="col s6 rightText">
+										<span class="votingResults-label">Yes</span>
+									</div>
+									<div class="col s6 leftText">
+										<span class="votingResults-labelValue" id="votingLabel-yes">x</span>
+									</div>
+								</div>
+
+								<div class="row votingResults-row">
+									<div class="col s6 rightText">
+										<span class="votingResults-label">No</span>
+									</div>
+									<div class="col s6 leftText">
+										<span class="votingResults-labelValue" id="votingLabel-no">x</span>
+									</div>
+								</div>
+
+								<div class="row votingResults-row">
+									<div class="col s6 rightText">
+										<span class="votingResults-label">Abstain</span>
+									</div>
+									<div class="col s6 leftText">
+										<span class="votingResults-labelValue" id="votingLabel-abstain">x</span>
+									</div>
+								</div>
+
+								<div class="row votingResults-row">
+									<div class="col s6 rightText">
+										<span class="votingResults-label">Perentage</span>
+									</div>
+									<div class="col s6 leftText">
+										<span class="votingResults-labelValue" id="votingLabel-percent">x</span>
+									</div>
+								</div>
+
+								<div class="row votingResults-row">
+									<div class="col s6 rightText">
+										<span class="votingResults-label">Result</span>
+									</div>
+									<div class="col s6 leftText">
+										<span class="votingResults-labelValue" id="votingLabel-statement">x</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col s12 m4 leftText" >
+								<div id="votingResults-chart"></div>
+							</div>
 						</div>
 					</div>
+
 					<a class="waves-effect waves-light btn blue" onclick="startVoting()"><span id="votingButton-start">Start Vote</span></a>
 				</div>
 
 				<!-- GSL Tab -->
 				<div class="container hidden" id="tab-gsl">
-					<div class="input-field" id="autocomplete-gsl-div">
-						<input id="autocomplete-gsl" type="text">
-						<label for="autocomplete-gsl">Add&nbsp;speaker&nbsp;</label>
-					</div>
+					<div class="sectionHeading">General Speakers List</div>
 
-					<a class="waves-effect waves-light blue btn">Start calling speakers</a>
-				
-					<p>Current Delegate</p>
-					<p>DelegateName</p>
+					<hr class="separator">
+
+					<div class="row listRow" >
+						<div class="col s6 listColumn">
+
+							<div class="input-field" id="gslAutocomplete-speaker-div">
+								<input id="gslAutocomplete-speaker" type="text" onblur="GSLAddSpeaker()" placeholder="">
+								<label for="gslAutocomplete-speaker" id="gslAutocompleteLabel-speaker">Add&nbsp;speaker</label>
+							</div>
+
+							<div class="label" style="margin-top: 1em;">List of Speakers</div>
+
+							<div  id="GSLList" style="margin-top: 1em;">
+								<!-- Stuff gets inserted here -->
+							</div>
+						</div>
+
+						<div class="col s6 centerText">
+							<div class="label">Current Speaker</div>
+
+							<div class="flag" id="gslFlag-speaker" style="margin-bottom: 0.5em;"></div>
+
+							<div class="label">Time for Speaker</div>
+							<div class="row centerText">
+								<div class="col s5 offset-s1">
+									<div class="input-field">
+										<input id="gslField-speakerMinutes" type="number" min="0" value="1" disabled onkeypress="return isNumberKey(event)">
+										<label for="gslField-speakerMinutes">Minutes</label>
+									</div>
+								</div>
+								<div class="col s5">
+									<div class="input-field">
+										<input id="gslField-speakerSeconds" type="number" min="0" value="30" disabled onkeypress="return isNumberKey(event)">
+										<label for="gslField-speakerSeconds">Seconds</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="progress">
+								<div class="determinate" id="gslProgress-speakerTime"></div>
+							</div>
+
+							<button class="waves-effect waves-light blue btn" id="gslButton-start" onclick="gslSpeakerStart()">
+								<span id="gslButtonLabel-start">Start</span>
+							</button>
+							<button class="waves-effect waves-light blue btn hidden gsl-control-buttons" id="gslButton-pause" onclick="gslPause()">
+								<span id="gslButtonLabel-pause">Pause</span>
+							</button>
+
+							<div>
+								<div class="label gslYieldButtons hidden" style="width: 100%;">Yield to</div>
+								<a class="waves-effect waves-gold btn-flat gslYieldButtons hidden" onclick="yieldChair()">
+									<span id="gslYieldButton-chair">Chair</span>
+								</a>
+								<a class="waves-effect waves-gold btn-flat gslYieldButtons hidden" onclick="yieldDelegate()">
+									<span id="gslYieldButton-delegate">Delegate</span>
+								</a>
+								<a class="waves-effect waves-gold btn-flat gslYieldButtons hidden" onclick="yieldQuestion()">
+									<span id="gslYieldButton-question">Questions</span>
+								</a>
+								<a class="waves-effect waves-gold btn-flat gslYieldButtons hidden" onclick="yieldComment()">
+									<span id="gslYieldButton-comment">Comments</span>
+								</a>
+							</div>
+
+						</div>
+					</div>
 				</div>
 
 				<!-- SSL Tab -->
-				<div class="container hidden" id="tab-ssl">
-					<div class="input-field" id="autocomplete-ssl-div">
-						<input id="autocomplete-ssl" type="text">
-						<label for="autocomplete-ssl">Add&nbsp;speaker&nbsp;</label>
-					</div>				
-	
-					<a class="waves-effect waves-light blue btn">Start calling speakers</a>
-
-					<div>
-						<p>Current Delegate</p>
-					</div>
-					<div>
-						<p>DelegateName</p>
-					</div>
+				<div class="container hidden centerText" id="tab-ssl">
+					
 				</div>
 
 				<!-- Mod Tab -->
 				<div class="container hidden" id="tab-mod">
-					<h5 class="blue-text text-darken-2 centerText font-weight-light">Moderated Caucus</h5>
+					<div class="sectionHeading">Moderated Caucus</div>
+
+					<hr class="separator">
+
 					<div class="row">
 						<div class="col s12 m6">
-							<div class="input-field" id="mod-topic">
-								<input id="mod-topic-field" type="text">
-								<label for="mod-topic-field">Topic</label>
+							<div class="input-field">
+								<input id="modField-topic" type="text">
+								<label for="modField-topic">Topic</label>
 							</div>
 						</div>
 						
 						<div class="col s12 m6">
 							<div class="input-field">
-								<input id="autocomplete-mod-start" type="text">
-								<label for="autocomplete-mod-start">Caucus&nbsp;started&nbsp;by</label>
+								<input id="modAutocomplete-start" type="text" placeholder="">
+								<label for="modAutocomplete-start">Caucus&nbsp;started&nbsp;by</label>
 							</div>
-							<div class="flag" id="flag-mod-start"></div>
+							<!-- <div class="flag" id="modFlag-start"></div> -->
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col s3">
-							<div class="flag" id="flag-mod-speaker"></div>
+							<div class="flag" id="modFlag-speaker"></div>
 						</div>
-						<div  class="col s6">
+						<div  class="col s5">
 							<div class="input-field">
-								<input id="autocomplete-mod-speaker" type="text">
-								<label for="autocomplete-mod-start">Current&nbsp;speaker</label>
+								<input id="modAutocomplete-speaker" type="text" onblur="modSpeakerTimer()" disabled="true" placeholder="">
+								<label for="modAutocomplete-speaker">Current&nbsp;speaker</label>
 							</div>
 						</div>
-						<div class="col s3">
-							<a class="waves-effect waves-light blue btn mod-control-buttons" onclick="modSpeakerButtonReset()">Reset Speaker Time</a>
+						<div class="col s4">
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modSpeakerPause()">
+								<span id="modButtonLabel-speakerPause">Pause</span>
+							</a>
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modSpeakerEnd()">
+								<span id="modButtonLabel-speakerPause">Stop</span>
+							</a>
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modSpeakerReset()">
+								<span id="modButtonLabel-speakerReset">Reset</span>
+							</a>
 						</div>
 					</div>
 
-					<h6 class="grey-text centerText">Time for Moderated Caucus</h6>
 					<div class="row">
-						<div class="col s2 offset-s4 m1 offset-m5">
-							<div class="input-field">
-								<input id="mod-minutes" type="number" value="0">
-								<label for="mod-minutes">Minutes</label>
+						<div class="col s6">
+							<div class="label">Time for speaker</div>
+							<div class="row">
+								<div class="col s5 offset-s1">
+									<div class="input-field">
+										<input id="modField-speakerMinutes" type="number" min="0" value="0" disabled="true" onkeypress="return isNumberKey(event)">
+										<label for="modField-speakerMinutes">Minutes</label>
+									</div>
+								</div>
+								<div class="col s5">
+									<div class="input-field">
+										<input id="modField-speakerSeconds" type="number" min="0" value="0" disabled="true" onkeypress="return isNumberKey(event)">
+										<label for="modField-speakerSeconds">Seconds</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="progress">
+								<div class="determinate" id="modProgress-speakerTime"></div>
 							</div>
 						</div>
-						<div class="col s2 m1">
-							<div class="input-field">
-								<input id="mod-seconds" type="number" value="0">
-								<label for="mod-seconds">Seconds</label>
+
+						<div class="col s6">
+							<div class="label">Time for Moderated Caucus</div>
+							<div class="row">
+								<div class="col s5 offset-s1">
+									<div class="input-field">
+										<input id="modField-caucusMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+										<label for="modField-caucusMinutes">Minutes</label>
+									</div>
+								</div>
+								<div class="col s5">
+									<div class="input-field">
+										<input id="modField-caucusSeconds" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+										<label for="modField-caucusSeconds">Seconds</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="progress">
+								<div class="determinate" id="modProgress-caucusTime"></div>
 							</div>
 						</div>
 					</div>
 										
-					<h6 class="grey-text centerText">Set time per speaker</h6>
+					<div class="label">Set time per speaker</div>
 					<div class="row">
-						<div class="col s2 m1 offset-s4 offset-m5">
+						<div class="col s2 offset-s4">
 							<div class="input-field">
-								<input id="mod-speaker-set-minutes" type="number" value="0">
-								<label for="mod-speaker-set-minutes">Minutes</label>
+								<input id="modField-setSpeakerMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<label for="modField-setSpeakerMinutes">Minutes</label>
 							</div>
 						</div>
-						<div class="col s2 m1">
+						<div class="col s2">
 							<div class="input-field">
-								<input id="mod-speaker-set-seconds" type="number" value="0">
-								<label for="mod-speaker-set-seconds">Seconds</label>
+								<input id="modField-setSpeakerSeconds" type="number" min="0" value="10"  onkeypress="return isNumberKey(event)">
+								<label for="modField-setSpeakerSeconds">Seconds</label>
 							</div>
 						</div>
-						<div class="col s2 m2">
+						<!-- <div class="col s2 m2">
 							<a class="waves-effect waves-light blue btn" onclick="modSpeakerSet()">Set</a>
-						</div>
+						</div> -->
 					</div>
-									
-					<h6 class="grey-text centerText">Time for speaker</h6>
-					<div class="row">
-						<div class="col s2 offset-s4 m1 offset-m5">
-							<div class="input-field">
-								<input id="mod-speaker-minutes" type="number" value="0" disabled="true">
-								<label for="mod-speaker-minutes">Minutes</label>
-							</div>
-						</div>
-						<div class="col s2 m1">
-							<div class="input-field">
-								<input id="mod-speaker-seconds" type="number" value="0" disabled="true">
-								<label for="mod-speaker-seconds">Seconds</label>
-							</div>
-						</div>
-					</div>	
 					
 					<div class="row centerText">
+						<div>
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modPause()">
+								<span id="modButton-pauseCaucus">Pause</span>
+							</a>
+							
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modExtendMin()">
+								<span>+1 min</span>
+							</a>
+
+							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modExtendSec()">
+								<span>+10 sec</span>
+							</a>
+						</div>
+
 						<a class="waves-effect waves-light blue btn" onclick="ModTimer()">
-							<span id="mod-caucus-button-label">Start Moderated Caucus</span>
-						</a>
-						
-						<a class="waves-effect waves-light blue btn mod-control-buttons" onclick="modPause()">
-							<span id="mod-caucus-pause-button-label">Pause</span>
-						</a>
-						
-						<a class="waves-effect waves-light blue btn mod-control-buttons" onclick="modExtendMin()">
-							+1 min
+							<span id="modButton-startCaucus">Start Moderated Caucus</span>
 						</a>
 
-						<a class="waves-effect waves-light blue btn mod-control-buttons" onclick="modExtendSec()">
-							+10 sec
-						</a>
 					</div>
 				</div>
 				
 
 				<!-- Unmod Tab -->
 				<div class="container hidden" id="tab-unmod">
-					<h5 class="blue-text text-darken-2 centerText font-weight-light">Unmoderated Caucus</h5>
+					<div class="sectionHeading">Unmoderated Caucus</div>
 
-					<hr>
+					<hr class="separator">
 					
-					<div class="row" style="text-align: center;">
+					<div class="row centerText">
 						<div class="col s12 m6">
 							<div class="input-field">
-								<input id="unmod-topic-field" type="text">
-								<label for="unmod-topic-field">Topic</label>
+								<input id="unmodField-topic" type="text">
+								<label for="unmodField-topic">Topic</label>
 							</div>
 						</div>
 						<div class="col s12 m6">
 							<div class="input-field">
-								<input type="text" id="autocomplete-unmod-start">
-								<label for="autocomplete-unmod-start">Caucus&nbsp;started&nbsp;by</label>
+								<span>
+									<input type="text" id="unmodAutocomplete-start" placeholder="">
+								<label for="unmodAutocomplete-start">Caucus&nbsp;started&nbsp;by</label>
 							</div>
-							<div class="flag" id="flag-unmod-start"></div>
+							<div class="flag" id="unmodFlag-start"></div>
 						</div>
 					</div>
 
-					<h6 class="grey-text centerText">Time for Unmoderated Caucus</h6>
+					<div class="label">Time for Unmoderated Caucus</div>
 					<div class="row">
-						<div class="col s2 offset-s4 m1 offset-m5">
-							<div class="input-field">
-								<input type="number" id="unmod-minutes" value="0">
-								<label for="unmod-minutes">Minutes</label>
+						<div class="col s2 offset-s4">
+							<div class="input-field centerText">
+								<input id="unmodField-caucusMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<label for="unmodField-caucusMinutes">Minutes</label>
 							</div>
 						</div>
-						<div class="col s2 m1">
-							<div class="input-field">
-								<input type="number" id="unmod-seconds" value="0">
-								<label for="unmod-seconds">Seconds</label>
+						<div class="col s2">
+							<div class="input-field centerText">
+								<input id="unmodField-caucusSeconds" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<label for="unmodField-caucusSeconds">Seconds</label>
 							</div>
 						</div>
 					</div>
 
-					<div class="progress" id="unmod-progress">
-						<div class="determinate blue" style="width: 70%"></div>
+					<div class="progress">
+						<div class="determinate" id="unmodProgress-caucusTime"></div>
 					</div>
-					
 					
 					<div class="row">
 						<div class="col s12 centerText">
 
+							<div class="col s12 centerText">
+								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodPause()">
+									<span id="unmodButton-pauseCaucus">Pause</span>
+								</a>
+								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodExtendMin()">
+									<span>+1 min</span>
+								</a>
+								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodExtendSec()">
+									<span>+10 sec</span>
+								</a>
+							</div>
+
 							<a class="waves-effect waves-light btn blue" onclick="UnmodTimer()">
-								<span id="unmod-caucus-button-label">Start Unmoderated Caucus</span>
-							</a>
-
-							<a class="waves-effect waves-gold btn-flat hidden unmod-control-buttons" onclick="unmodPause()">
-								<span id="unmod-caucus-pause-button-label">Pause</span>
-							</a>
-
-							<a class="waves-effect waves-gold btn-flat hidden unmod-control-buttons" onclick="unmodExtendMin()">
-								+1 min
-							</a>
-							<a class="waves-effect waves-gold btn-flat hidden unmod-control-buttons" onclick="unmodExtendSec()">
-								+10 sec
+								<span id="unmodButton-startCaucus">Start Unmoderated Caucus</span>
 							</a>
 
 						</div>
 					</div>
 				</div>
 
-			</div>
+				<!-- Resolution Tab -->
+				<div class="container centerText hidden" id="tab-resolution">
+					<div class="sectionHeading">Resolution</div>
 
-			<!-- Resolution Tab -->
-			<div class="container centerText hidden" id="tab-resolution">
-				<p class="">Resolution Vote</p>
-				<p class="">Current Delegate</p>
-				<p class="">DelegateName</p>
-				<div>
-					<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-current">x</p>
-					<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbsp;of&nbsp;</p>
-					<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-max">y</p>
+					<hr class="separator">
+
+					<p class="">Current Delegate</p>
+					<p class="">DelegateName</p>
+					<div>
+						<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-current">x</p>
+						<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;">&nbsp;of&nbsp;</p>
+						<p class="ms-font-s ms-fontColor-neutralSecondary" style="display: inline;" id="ResolutionVote-max">y</p>
+					</div>
+					<div>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-1" onClick="doResolutionVote(this)">Yes</a>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-2" onClick="doResolutionVote(this)">No</a>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-3" onClick="doResolutionVote(this)">Yes With Rights</a>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-4" onClick="doResolutionVote(this)">No With Rights</a>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-5" onClick="doResolutionVote(this)">Abstain</a>
+						<a class="waves-effect waves-light btn blue" id="ResolutionVote-6" onClick="doResolutionVote(this)">Pass</a>
+					</div>
+					<a class="waves-effect waves-light btn blue">Stop Vote</a>
 				</div>
-				<div>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-1" onClick="doResolutionVote(this)">Yes</a>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-2" onClick="doResolutionVote(this)">No</a>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-3" onClick="doResolutionVote(this)">Yes With Rights</a>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-4" onClick="doResolutionVote(this)">No With Rights</a>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-5" onClick="doResolutionVote(this)">Abstain</a>
-					<a class="waves-effect waves-light btn blue" id="ResolutionVote-6" onClick="doResolutionVote(this)">Pass</a>
-				</div>
-				<a class="waves-effect waves-light btn blue">Stop Vote</a>
+
 			</div>
 		</div>	<!-- End of layout -->
 
@@ -436,10 +583,16 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 		<!-- Javascript Files -->
 		<!-- jQuery -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<!-- jQuery Autocomplete Plugin from https://github.com/devbridge/jQuery-Autocomplete -->
-		<script src="jquery.autocomplete.min.js"></script>
+		<!-- jQuery UI -->
+		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<!-- jQuery UI Touch Punch (For enabling touch events support for jQuery UI) -->
+		<script src="jquery.ui.touch-punch.min.js"></script>
 		<!-- Materialize -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+		<!-- CanvasJS -->
+		<script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+		<!-- jQuery Autocomplete Plugin from https://github.com/devbridge/jQuery-Autocomplete -->
+		<script src="jquery.autocomplete.min.js"></script>
 		<!-- Custom JS -->
 		<script src="munmod.js"></script>
 		

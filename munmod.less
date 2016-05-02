@@ -10,11 +10,23 @@ For MUN Moderator Web App
 /*
 Styling for the structural components
 */
+
+/*
+Open Sans Font Weights
+Light: 300
+Normal: 400
+Semi-Bold: 600
+Bold: 700
+*/
+html, body, #layout, #main {
+	width: 100%;
+	height: 100%;
+}
 body {
 	font-weight: 400;
 	font-family: 'Open Sans', sans-serif;
 	font-size: 14px;
-	min-width: 600px;	/*for usability on mobile and narrow screens*/
+	min-width: 650px;	/*for usability on mobile and narrow screens*/
 	// display: none;
 }
 hr {
@@ -35,9 +47,20 @@ hr {
 .centerText {
 	text-align: center;
 }
+.rightText {
+	text-align: right;
+}
+.leftText {
+	text-align: left;
+}
 
 .hidden {
 	display: none;
+}
+.label {
+	text-align: center;
+	font-size: 1em;
+	color: #999;
 }
 
 #headerArea {
@@ -68,7 +91,7 @@ hr {
 	height: 50px;
 	width: 100%;
 	background-color: #000000;
-	color: #d69d36;
+	color: @KMUNgold;
 	border-bottom: 1px solid @KMUNgold;
 	cursor: default;
 	position: fixed;
@@ -77,8 +100,8 @@ hr {
 }
 #status-bar {
 	font-size: 10px;
-	padding-top: 15px;
-	padding-right: 15px;
+	padding-top: 17px;
+	padding-right: 10px;
 	float: right;
 }
 #status-bar i {
@@ -92,12 +115,28 @@ hr {
 	position: absolute;
 }
 
-#sessionSelector {
-	width: 100px;
-	height: 30px;
-	padding-top: 10px;
-	padding-left: 350px;
+
+#sessionSelectorDiv {
+	width: 500px;
+	height: 40px;
+	padding-top: 5px;
+	padding-left: 400px;
+	margin-top: 0px;
 	position: absolute;
+	outline: 0px;
+	border: 0px;
+}
+
+.caret {
+	color: @KMUNgold;
+}
+
+#sessionSelector {
+    width: 100px;
+    height: 40px;
+    background-color: #000;
+    outline: 0px;
+    border: 0px;
 }
 
 #agenda {
@@ -105,7 +144,7 @@ hr {
 }
 
 #CurrentAgendaField {
-	color: #0078D7;
+	color: @KMUNblue;
 	font-size: 1em;
 }
 
@@ -156,7 +195,6 @@ hr {
 	margin-top: 4px;
 }
 
-
 #loading {
 	position: fixed;
 	left: 0;
@@ -167,6 +205,127 @@ hr {
 	padding-top: 45vh;
 	background-color: #ddd;
 	z-index: 10000;
+}
+
+.sectionHeading {
+	font-size: 2.8em;
+	font-weight: 300;
+	color: @KMUNblue;
+	text-align: center;
+}
+
+.subHeading {
+	font-size: 1.8em;
+	font-weight: 400;
+	color: @KMUNgold;
+	text-align: center;
+	margin-bottom: 0.5em;
+}
+
+#votingLabel-delegate {
+	font-weight: 600;
+	font-size: 1.5em;
+	color: lighten(@KMUNblue, 15%);
+}
+
+#votingLabel-serialNumber {
+	margin-bottom: 1em;
+}
+
+.votingControlButtons {
+	margin-bottom: 2em;
+	width: 8em;
+}
+
+.votingResults {
+	margin: 2em;
+}
+
+.votingResults-row {
+	margin: 0.1em;
+	padding: 0px;
+}
+
+.votingResults-label {
+	color: @KMUNblue;
+	font-weight: 600;
+	font-size: 1.1em;
+}
+
+.votingResults-labelValue {
+	color: @KMUNgold;
+	font-weight: 300;
+	font-size: 1.2em;
+}
+
+#votingResults-chart {
+	height: 200px;
+	width: 200px;
+}
+
+.separator {
+	margin: auto;
+	margin-top: 0.3em;
+	margin-bottom: 1.5em;
+	width: 2.5em;
+	//background: radial-gradient(@KMUNgold, white, white);
+	background-color: @KMUNgold;
+	height: 1px;
+}
+
+.progress {
+	width: 60%;
+	background-color: #ccc;
+	margin: auto;
+	margin-bottom: 1em;
+}
+.progress .determinate {
+	background-color: @KMUNblue;
+}
+.progress .determinateLow {
+	background-color: @KMUNred;
+	// This properties are applied for .determinate by materialize
+	position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width .3s linear;
+}
+
+#unmodProgress-caucusTime,
+#modProgress-caucusTime,
+#modProgress-speakerTime,
+#gslProgress-speakerTime {
+	width: 0%;
+}
+
+#unmodField-caucusMinutes,
+#unmodField-caucusSeconds,
+#modField-caucusMinutes,
+#modField-caucusSeconds, 
+#modField-speakerMinutes,
+#modField-speakerSeconds,
+#gslField-speakerMinutes,
+#gslField-speakerSeconds {
+	text-align: center;
+	font-size: 2em;
+	height: 2em;
+	min-width: 2em;
+}
+
+#unmodField-caucusMinutes:disabled,
+#unmodField-caucusSeconds:disabled,
+#modField-caucusMinutes:disabled,
+#modField-caucusSeconds:disabled,
+#modField-speakerMinutes:disabled,
+#modField-speakerSeconds:disabled,
+#gslField-speakerMinutes:disabled,
+#gslField-speakerSeconds:disabled {
+	text-align: center;
+	font-size: 3.5em;
+	color: @KMUNblue;
+	height: 2em;
+	min-width: 2em;
 }
 
 /*
@@ -236,8 +395,11 @@ hr {
 	font-weight: 300;
 }
 
-.btn {
-	margin: 0.4rem;
+.btn, .btn-flat {
+	margin: 0.5em;
+}
+.btn-flat {
+	background-color: #eee;
 }
 
 .blue {
@@ -365,7 +527,7 @@ This styles the menu heading.
 */
 #menu .pure-menu-heading {
 	cursor: default;
-	color: rgba(14,113,195,1);
+	color: @KMUNblue;
 	margin: 0;
 	height: 30px;
 	padding-top: 15px;
@@ -426,7 +588,7 @@ small screens.
 /*
 Hides the menu at `48em`, but modify this based on your app's needs.
 */
-@media (min-width: 60em) {
+@media (min-width: 992px) {
 	.header,
 	.content {
 		padding-left: 2em;
@@ -450,7 +612,7 @@ Hides the menu at `48em`, but modify this based on your app's needs.
 
 }
 
-@media (max-width: 60em) {
+@media (max-width: 992px) {
 /* Only apply this when the window is small. Otherwise, the following
 case results in extra padding on the left:
 	* Make the window small.
@@ -465,10 +627,13 @@ case results in extra padding on the left:
 	#committeeName {
 		padding-left: 60px;
 	}
+	#sessionSelectorDiv {
+		padding-left: 250px;
+	}
 }
 
-/*my-List Styling*/
-.my-List {
+/*rollCallList Styling*/
+.rollCallList {
 	box-sizing: border-box;
 	-webkit-user-select: none;  
   	-moz-user-select: none;
@@ -477,33 +642,33 @@ case results in extra padding on the left:
   	cursor: default;
   	// margin: 2em;
 }
-.my-ListItem {
+.rollCallListItem {
 	height: 3em;
 	display: block;
 	box-sizing: border-box;	/*padding is calculated inside the dimensions of the element so that they do not vary because of padding*/
 	margin-left: 1em;
 	margin-right: 1em;
 }
-.my-ListItem:hover,
-.my-ListItem:active {
+.rollCallListItem:hover,
+.rollCallListItem:active {
 	background-color: #eeeeee;
 }
-.my-ListItem-Button1-Text:hover,
-.my-ListItem-Button1-Text:active {
+.rollCallListItem-Button1-Text:hover,
+.rollCallListItem-Button1-Text:active {
 	background-color: #960000;
 	color: #ffffff;
 }
-.my-ListItem-Button2-Text:hover,
-.my-ListItem-Button2-Text:active {
+.rollCallListItem-Button2-Text:hover,
+.rollCallListItem-Button2-Text:active {
 	background-color: #2B88D8;
 	color: #ffffff;
 }
-.my-ListItem-Button3-Text:hover,
-.my-ListItem-Button3-Text:active {
+.rollCallListItem-Button3-Text:hover,
+.rollCallListItem-Button3-Text:active {
 	background-color: @KMUNgold;
 	color: #ffffff;
 }
-.my-ListItem-Text {
+.rollCallListItem-Text {
 	padding: 0.7em 0em 0.7em 1em;
 	height: 100%;
 	min-width: 10em;
@@ -514,7 +679,7 @@ case results in extra padding on the left:
 	box-sizing: border-box;
 	color: #333;
 }
-.my-ListItem-Button1-Text {
+.rollCallListItem-Button1-Text {
 	padding: 0.7em 0.3em 0.7em 0.3em;
 	height: 100%;
 	// min-width: 8em;
@@ -525,7 +690,7 @@ case results in extra padding on the left:
 	box-sizing: border-box;
 	color: #960000;
 }
-.my-ListItem-Button2-Text {
+.rollCallListItem-Button2-Text {
 	padding: 0.7em 0.3em 0.7em 0.3em;
 	height: 100%;
 	// min-width: 8em;
@@ -536,7 +701,7 @@ case results in extra padding on the left:
 	box-sizing: border-box;
 	color: #2B88D8;
 }
-.my-ListItem-Button3-Text {
+.rollCallListItem-Button3-Text {
 	padding: 0.7em 0.3em 0.7em 0.3em;
 	height: 100%;
 	// min-width: 8em;
@@ -548,31 +713,31 @@ case results in extra padding on the left:
 	color: @KMUNgold;
 }
 
-.my-ListItem-Text-selected-1 {
+.rollCallListItem-Text-selected-1 {
 	// background-color: #960000;
 	color: #960000;
 	border-left: 7px solid #960000;
 }
-.my-ListItem-Text-selected-2 {
+.rollCallListItem-Text-selected-2 {
 	// background-color: #2B88D8;
 	color: #2B88D8;
 	border-left: 7px solid #2B88D8;
 }
-.my-ListItem-Text-selected-3 {
+.rollCallListItem-Text-selected-3 {
 	// background-color:  #005A9E;
 	color: @KMUNgold;
 	border-left: 7px solid @KMUNgold;
 }
 
-.my-ListItem-Button1-selected {
+.rollCallListItem-Button1-selected {
 	background-color: #960000;
 	color: #fff;
 }
-.my-ListItem-Button2-selected {
+.rollCallListItem-Button2-selected {
 	background-color: #2B88D8;
 	color: #fff;
 }
-.my-ListItem-Button3-selected {
+.rollCallListItem-Button3-selected {
 	background-color: @KMUNgold;
 	color: #fff;
 }
@@ -581,4 +746,134 @@ case results in extra padding on the left:
 	font-size: 1em;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+#list-rollCall {
+	margin-top: 1.5em;
+	margin-bottom: 3em;
+}
+
+
+#rollCallStatus {
+	margin: 1em;
+}
+
+.rollCallStatus-propertyName {
+	color: @KMUNblue;
+	font-weight: 600;
+}
+
+.rollCallStatus-propertyValue {
+	color: @KMUNgold;
+	font-size: 1.2em;
+	
+}
+
+/*GSL*/
+
+#tab-gsl {
+	height: ~"calc(100% - 200px)";
+}
+#tab-gsl .listRow {
+	height: ~"calc(100% - 50px)";
+}
+#tab-gsl .listRow .listColumn {
+	height: 100%;
+}
+
+
+
+#GSLList {
+	box-sizing: border-box;
+	-webkit-user-select: none;  
+  	-moz-user-select: none;
+  	-ms-user-select: none;  
+  	user-select: none;
+  	cursor: default;
+
+	height: ~"calc(100% - 140px)";
+	min-height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-bottom: 30px;
+	padding: 0px;
+
+}
+
+.GSLListItem {
+	height: 3em;
+	display: block;
+	box-sizing: border-box;	/*padding is calculated inside the dimensions of the element so that they do not vary because of padding*/
+	margin-right: 1em;
+	position: relative;
+}
+.GSLListItem:hover,
+.GSLListItem:active {
+	background-color: #ddd;
+}
+.GSLListItem-Text {
+	padding: 0.7em 0em 0.7em 1em;
+	height: 100%;
+	min-width: 10em;
+	width: 80%;
+	display: inline-block;
+	text-align: left;
+	background-color: transparent;
+	box-sizing: border-box;
+	color: #333;
+
+	border-left: 7px solid @KMUNgold;
+}
+.GSLListItem-Text-selected {
+	border-left: 7px solid @KMUNblue;
+}
+
+.GSLListItem-Button1-Text {
+	padding: 0.7em 0.3em 0.7em 0.3em;
+	height: 100%;
+	min-width: 20px;
+	width: 10%;
+	display: inline-block;
+	text-align: center;
+	float: right;
+	box-sizing: border-box;
+	color: #960000;
+}
+.GSLListItem-Button2-Text {
+	padding: 0.7em 0.3em 0.7em 0.3em;
+	height: 100%;
+	min-width: 20px;
+	width: 10%;
+	display: inline-block;
+	text-align: center;
+	float: right;
+	box-sizing: border-box;
+	color: #bbb;
+}
+.GSLListItem-Button1-Text:hover,
+.GSLListItem-Button1-Text:active {
+	cursor: pointer;
+	background-color: #960000;
+	color: #ffffff;
+}
+.GSLListItem-Button2-Text:hover,
+.GSLListItem-Button2-Text:active {
+	cursor: move;
+	background-color: #bbb;
+	color: #ffffff;
+}
+
+.gslYieldButtons {
+	text-align: center;
+	width: 10em;
+}
+
+.unmod-control-buttons {
+	text-align: center;
+	width: 8em;
+}
+
+.mod-control-buttons {
+	text-align: center;
+	width: 8em;
 }

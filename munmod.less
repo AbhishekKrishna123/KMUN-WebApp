@@ -22,10 +22,10 @@ html, body, #layout, #main {
 	width: 100%;
 	height: 100%;
 }
-body {
+html {
 	font-weight: 400;
 	font-family: 'Open Sans', sans-serif;
-	font-size: 14px;
+	font-size: 0.8rem;
 	min-width: 650px;	/*for usability on mobile and narrow screens*/
 	// display: none;
 }
@@ -34,10 +34,10 @@ hr {
 	height: 1px;
 	border: 0;
 	border-top: 1px solid #eeeeee;
-	margin-left: 2em;
-	margin-right: 2em;
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
+	margin-left: 2rem;
+	margin-right: 2rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
 	padding: 0;
 }
 .opacityZero {
@@ -59,12 +59,13 @@ hr {
 }
 .label {
 	text-align: center;
-	font-size: 1em;
+	font-size: 1rem;
 	color: #999;
 }
 
 #headerArea {
 	height: 49px;
+	border-bottom: 1px solid @KMUNgold;
 }
 #headerImage {
 	height: 49px;
@@ -140,17 +141,16 @@ hr {
 }
 
 #agenda {
-	padding-top: 4em;
+	padding-top: 70px;
 }
 
 #CurrentAgendaField {
 	color: @KMUNblue;
-	font-size: 1em;
 }
 
 #welcome {
 	text-align: center;
-	padding-top: 5em;
+	padding-top: 5rem;
 }
 
 /*For the jQuery UI autocomplete text fields*/
@@ -180,9 +180,9 @@ hr {
 .flag {
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 1em;
-	height: 6em;
-	width: 9em;
+	margin-top: 1rem;
+	height: 6rem;
+	width: 9rem;
 	background-image: url('logoSmall.png');
 	background-repeat: no-repeat;
 	background-size: contain;
@@ -208,54 +208,54 @@ hr {
 }
 
 .sectionHeading {
-	font-size: 2.8em;
+	font-size: 2.8rem;
 	font-weight: 300;
 	color: @KMUNblue;
 	text-align: center;
 }
 
 .subHeading {
-	font-size: 1.8em;
+	font-size: 1.8rem;
 	font-weight: 400;
 	color: @KMUNgold;
 	text-align: center;
-	margin-bottom: 0.5em;
+	margin-bottom: 0.5rem;
 }
 
 #votingLabel-delegate {
 	font-weight: 600;
-	font-size: 1.5em;
+	font-size: 1.5rem;
 	color: lighten(@KMUNblue, 15%);
 }
 
 #votingLabel-serialNumber {
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 }
 
 .votingControlButtons {
-	margin-bottom: 2em;
-	width: 8em;
+	margin-bottom: 2rem;
+	width: 8rem;
 }
 
 .votingResults {
-	margin: 2em;
+	margin: 2rem;
 }
 
 .votingResults-row {
-	margin: 0.1em;
+	margin: 0.1rem;
 	padding: 0px;
 }
 
 .votingResults-label {
 	color: @KMUNblue;
 	font-weight: 600;
-	font-size: 1.1em;
+	font-size: 1.1rem;
 }
 
 .votingResults-labelValue {
 	color: @KMUNgold;
 	font-weight: 300;
-	font-size: 1.2em;
+	font-size: 1.2rem;
 }
 
 #votingResults-chart {
@@ -265,9 +265,9 @@ hr {
 
 .separator {
 	margin: auto;
-	margin-top: 0.3em;
-	margin-bottom: 1.5em;
-	width: 2.5em;
+	margin-top: 0.3rem;
+	margin-bottom: 1.5rem;
+	width: 2.5rem;
 	//background: radial-gradient(@KMUNgold, white, white);
 	background-color: @KMUNgold;
 	height: 1px;
@@ -277,7 +277,7 @@ hr {
 	width: 60%;
 	background-color: #ccc;
 	margin: auto;
-	margin-bottom: 1em;
+	margin-bottom: 1rem;
 }
 .progress .determinate {
 	background-color: @KMUNblue;
@@ -308,9 +308,9 @@ hr {
 #gslField-speakerMinutes,
 #gslField-speakerSeconds {
 	text-align: center;
-	font-size: 2em;
-	height: 2em;
-	min-width: 2em;
+	font-size: 2rem;
+	height: 2rem;
+	min-width: 2rem;
 }
 
 #unmodField-caucusMinutes:disabled,
@@ -322,10 +322,10 @@ hr {
 #gslField-speakerMinutes:disabled,
 #gslField-speakerSeconds:disabled {
 	text-align: center;
-	font-size: 3.5em;
+	font-size: 3.5rem;
 	color: @KMUNblue;
-	height: 2em;
-	min-width: 2em;
+	height: 2rem;
+	min-width: 2rem;
 }
 
 /*
@@ -508,7 +508,7 @@ This styles a link within a selected menu item `<li>`.
   	// background-color: rgba(0, 120, 215, 0.4);
   	border-left: 8px solid @KMUNgold;
   	box-sizing: border-box;
-  	font-size: 14px;
+  	font-size: 1rem;
 }
 #menu .pure-menu-selected a{
   	color: #d69d36;
@@ -643,11 +643,11 @@ case results in extra padding on the left:
   	// margin: 2em;
 }
 .rollCallListItem {
-	height: 3em;
+	height: 3rem;
 	display: block;
 	box-sizing: border-box;	/*padding is calculated inside the dimensions of the element so that they do not vary because of padding*/
-	margin-left: 1em;
-	margin-right: 1em;
+	margin-left: 1rem;
+	margin-right: 1rem;
 }
 .rollCallListItem:hover,
 .rollCallListItem:active {
@@ -669,9 +669,9 @@ case results in extra padding on the left:
 	color: #ffffff;
 }
 .rollCallListItem-Text {
-	padding: 0.7em 0em 0.7em 1em;
+	padding: 0.7rem 0rem 0.7rem 1rem;
 	height: 100%;
-	min-width: 10em;
+	min-width: 10rem;
 	width: 39%;
 	display: inline-block;
 	text-align: left;
@@ -680,9 +680,9 @@ case results in extra padding on the left:
 	color: #333;
 }
 .rollCallListItem-Button1-Text {
-	padding: 0.7em 0.3em 0.7em 0.3em;
+	padding: 0.7rem 0.3rem 0.7rem 0.3rem;
 	height: 100%;
-	// min-width: 8em;
+	// min-width: 8rem;
 	width: 18%;
 	display: inline-block;
 	text-align: center;
@@ -691,9 +691,9 @@ case results in extra padding on the left:
 	color: #960000;
 }
 .rollCallListItem-Button2-Text {
-	padding: 0.7em 0.3em 0.7em 0.3em;
+	padding: 0.7rem 0.3rem 0.7rem 0.3rem;
 	height: 100%;
-	// min-width: 8em;
+	// min-width: 8rem;
 	width: 18%;
 	display: inline-block;
 	text-align: center;
@@ -702,9 +702,9 @@ case results in extra padding on the left:
 	color: #2B88D8;
 }
 .rollCallListItem-Button3-Text {
-	padding: 0.7em 0.3em 0.7em 0.3em;
+	padding: 0.7rem 0.3rem 0.7rem 0.3rem;
 	height: 100%;
-	// min-width: 8em;
+	// min-width: 8rem;
 	width: 25%;
 	display: inline-block;
 	text-align: center;
@@ -743,19 +743,19 @@ case results in extra padding on the left:
 }
 
 #button-rollCallReset {
-	font-size: 1em;
+	font-size: 1rem;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 #list-rollCall {
-	margin-top: 1.5em;
-	margin-bottom: 3em;
+	margin-top: 1.5rem;
+	margin-bottom: 3rem;
 }
 
 
 #rollCallStatus {
-	margin: 1em;
+	margin: 1rem;
 }
 
 .rollCallStatus-propertyName {
@@ -765,7 +765,7 @@ case results in extra padding on the left:
 
 .rollCallStatus-propertyValue {
 	color: @KMUNgold;
-	font-size: 1.2em;
+	font-size: 1.2rem;
 	
 }
 

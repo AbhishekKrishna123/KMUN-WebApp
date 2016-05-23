@@ -1,6 +1,20 @@
-/*--------------------------------------------------
-			Pure CSS Code (For side panel)
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////                            munmod.js                                  /////
+////     This file is the main JS file for the KMUN MunModerator WebApp.   /////
+////                                                                       /////
+////                                                                       /////
+////                                                                       /////
+////                                                                       /////
+////                                                                       /////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        Pure CSS Code (For navigation panel)
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 (function (window, document) {
 
 	var layout	 = document.getElementById('layout'),
@@ -37,16 +51,12 @@
 
 }(this, this.document));
 
-// For Materialize 'select' element
+// Initialize Materialize 'select' element
 $(document).ready(function() {
     $('select').material_select();
 });
 
-// $(function() {
-//     $( "#sortable" ).sortable();
-//     $( "#sortable" ).disableSelection();
-//   });
-
+// Initialize the GSL List to be sortable using jQueryUI
 $(function() {
     $( "#GSLList" ).sortable({
     	delay: 100,
@@ -54,61 +64,121 @@ $(function() {
     		gslListSelection();
     	},
     	handle: '.GSLListItem-Button2-Text',
-    	cursor: 'move',
-
+    	cursor: 'move'
     });
     $( "#GSLList" ).disableSelection();
-  });
+});
 
-/*--------------------------------------------------
-		My Functions (done by me own my own)
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        		Random Functions
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 
-// fade in when page loads
+// Fade in when page loads
 $(window).load(function(){
 	setTimeout(function(){
 		$('#loading').fadeOut("slow");
 	}, 200);
-	
 });
 
+// Show confirmation alert when window is closed
 // window.onbeforeunload = function(e) {
 //     return 'Are you sure you want to close MUN Moderator?';
 // };
 
-var currentSession = "session0";	// Used for knowing which session is active throughout execution
+// Stores the current session
+var currentSession = "session0";
+// Modifies the session
 function sessionSelect(){
 	// Retrieve the session from the select element
 	currentSession = document.getElementById("sessionSelector").value;
 	// Insert value into the DB
-	db.transaction("Variables", "readwrite").objectStore("Variables").put(currentSession, "currentSession").onerror = function(event){
-		console.log("Couldn't change current session in DB.");
-		currentSession = "session0";
-	}
+	// db.transaction("Variables", "readwrite").objectStore("Variables").put(currentSession, "currentSession").onerror = function(event){
+	// 	console.log("Couldn't change current session in DB.");
+	// 	currentSession = "session0";
+	// }
 }
 
 /*--------------------------------------------------
-			For jQueryUI autocomplete
+				Connectivity Status
 --------------------------------------------------*/
+var connectivityErrors = 0;	// Ensures that just a single error on a good connection is not reported as 'No Connectivty'; Requires two consecutive errors
+$(document).ready(function(){
+	setInterval(function(){
+		var myData="0";
+		request = $.ajax({
+			url: "connectivity.php",
+			type: "post",
+			data: myData
+		});
+		// Internet connected, server accessible
+		request.done(function (response, textStatus, jqXHR){
+			connectivityErrors = 0;	// Reset counter
+			if (response == "1"){	// Everything OK
+				$("#status-icon").css("color", "#006600");	// Green
+				$("#status-text").html(" OK");
+			}
+			else if (response == "0"){	// SQL Error
+				$("#status-icon").css("color", "#FF0000");	// Red
+				$("#status-text").html(" SQL Error");
+			}
+			else {	// PHP Error
+				$("#status-icon").css("color", "#FF0000");	// 	Red
+				$("#status-text").html(" PHP Error");
+			}
+		});
+
+		// Not connected to internet or server down
+		request.fail(function (jqXHR, textStatus, errorThrown){
+			if (connectivityErrors > 1){
+				$("#status-icon").css("color", "#FFCC00");	// Yellow
+				$("#status-text").html(" No Internet");
+			}
+			connectivityErrors++;	// Increment counter
+		});
+	}, 7000);	// Check every 7 seconds
+});
+
+/*--------------------------------------------------
+		For fields: Numbers Only Validation
+--------------------------------------------------*/
+// Allows only numbers to be typed into fields
+function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                	Autocomplete configuration and initialisation
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+
 // Binds the sources for the autocomplete function
 // Needs to be called once the array is populated
-function autocompleteSources(){
+function AutocompleteSources(){
 	$(function(){
 		$('#unmodAutocomplete-start').autocomplete({
 			lookup: currentList,
-			minChars: 0
+			minChars: 0,
+			maxHeight: 250
 		});
 	});
 	$(function(){
 		$('#modAutocomplete-start').autocomplete({
 			lookup: currentList,
-			minChars: 0
+			minChars: 0,
+			maxHeight: 250
 		});
 	});
 	$(function(){
 		$('#modAutocomplete-speaker').autocomplete({
 			lookup: currentList,
 			minChars: 0,
+			maxHeight: 250,
 		onSelect: function() {
 			//modSpeakerReset();
 		}
@@ -118,6 +188,7 @@ function autocompleteSources(){
 		$('#gslAutocomplete-speaker').autocomplete({
 			lookup: currentList,
 			minChars: 0,
+			maxHeight: 250,
 			onselect: function() {
 				//GSLAddSpeaker();
 			},
@@ -126,9 +197,12 @@ function autocompleteSources(){
 }
 
 
-/*--------------------------------------------------
-				Navigation Control
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        	Navigation pane control
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+
 $(document).ready(function(){
 	$("#headerArea").click(function(){
 	if ($("#welcome").hasClass("hidden")) {
@@ -327,19 +401,11 @@ var masterList = [];
 // List of delegates who are present
 var currentList = [];
 
-/*--------------------------------------------------
-		For fields: Numbers Only Validation
---------------------------------------------------*/
-function isNumberKey(evt){
-    var charCode = (evt.which) ? evt.which : event.keyCode
-    if (charCode > 31 && (charCode < 48 || charCode > 57))
-        return false;
-    return true;
-}
-
-/*--------------------------------------------------
-					Roll Call
---------------------------------------------------*/
+/////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        		Roll Call Section
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 
 // Bind event handlers for buttons after they are added to the page dynamically
 function bindRollCallButtons() {
@@ -350,21 +416,22 @@ function bindRollCallButtons() {
 		}
 		else {
 			// Remove formatting of the other buttons
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-2');
-			$(this).parent().find('.rollCallListItem-Button2-Text').removeClass('rollCallListItem-Button2-selected');
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-3');
-			$(this).parent().find('.rollCallListItem-Button3-Text').removeClass('rollCallListItem-Button3-selected');
+			var parent = $(this).parent();
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-2');
+			parent.find('.rollCallListItem-Button2-Text').removeClass('rollCallListItem-Button2-selected');
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-3');
+			parent.find('.rollCallListItem-Button3-Text').removeClass('rollCallListItem-Button3-selected');
 			// Add formatting for this button
-			$(this).parent().find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-1');
+			parent.find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-1');
 			$(this).addClass('rollCallListItem-Button1-selected');
 
 			// Modify the indexedDB
-			var delegate = $(this).parent().find('.rollCallListItem-Text').html();
+			var delegate = parent.find('.rollCallListItem-Text').html();
 			db.transaction("Delegates").objectStore("Delegates").get(delegate).onsuccess = function(event) {
 				tempDelegate = event.target.result;
 				tempDelegate.session0.attendance = 0;	// Mark as absent
 				db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-					calcRollCallStatus();
+					CalcRollCallStatus();
 				}	
 			};
 
@@ -377,7 +444,7 @@ function bindRollCallButtons() {
 				}
 			}
 			// Bind the modified array for the autocomplete
-			autocompleteSources();
+			AutocompleteSources();
 		}
 	});
 	// Click on button 2 (present)
@@ -387,21 +454,22 @@ function bindRollCallButtons() {
 		}
 		else {
 			// Remove formatting of the other buttons
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-3');
-			$(this).parent().find('.rollCallListItem-Button3-Text').removeClass('rollCallListItem-Button3-selected');
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
-			$(this).parent().find('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
+			var parent = $(this).parent();
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-3');
+			parent.find('.rollCallListItem-Button3-Text').removeClass('rollCallListItem-Button3-selected');
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
+			parent.find('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
 			// Add formatting for this button
-			$(this).parent().find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-2');
+			parent.find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-2');
 			$(this).addClass('rollCallListItem-Button2-selected');
 
 			// Modify the indexedDB
-			var delegate = $(this).parent().find('.rollCallListItem-Text').html();
+			var delegate = parent.find('.rollCallListItem-Text').html();
 			db.transaction("Delegates").objectStore("Delegates").get(delegate).onsuccess = function(event) {
 				tempDelegate = event.target.result;
 				tempDelegate.session0.attendance = 1;	// Mark as present
 				db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-					calcRollCallStatus();
+					CalcRollCallStatus();
 				}
 			};
 			
@@ -415,7 +483,7 @@ function bindRollCallButtons() {
 			// Add the delegate name exists to the currentList
 			currentList.push(delegate);
 			// Bind the modified array for the autocomplete
-			autocompleteSources();
+			AutocompleteSources();
 		}
 	});
 	// Click on button 3 (present & voting)
@@ -425,21 +493,22 @@ function bindRollCallButtons() {
 		}
 		else {
 			// Remove formatting of the other buttons
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-2');
-			$(this).parent().find('.rollCallListItem-Button2-Text').removeClass('rollCallListItem-Button2-selected');
-			$(this).parent().find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
-			$(this).parent().find('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
+			var parent = $(this).parent();
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-2');
+			parent.find('.rollCallListItem-Button2-Text').removeClass('rollCallListItem-Button2-selected');
+			parent.find('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
+			parent.find('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
 			// Add formatting for this button
-			$(this).parent().find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-3');
+			parent.find('.rollCallListItem-Text').addClass('rollCallListItem-Text-selected-3');
 			$(this).addClass('rollCallListItem-Button3-selected');
 
 			// Modify the indexedDB
-			var delegate = $(this).parent().find('.rollCallListItem-Text').html();
+			var delegate = parent.find('.rollCallListItem-Text').html();
 			db.transaction("Delegates").objectStore("Delegates").get(delegate).onsuccess = function(event) {
 				tempDelegate = event.target.result;
 				tempDelegate.session0.attendance = 2;	// Mark as present & voting
 				db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-					calcRollCallStatus();
+					CalcRollCallStatus();
 				}
 			};
 
@@ -453,13 +522,13 @@ function bindRollCallButtons() {
 			// Add the delegate name exists to the currentList
 			currentList.push(delegate);
 			// Bind the modified array for the autocomplete
-			autocompleteSources();
+			AutocompleteSources();
 		}
 	});
 
 }
 
-function calcRollCallStatus() {
+function CalcRollCallStatus() {
 	var total = masterList.length;
 	document.getElementById('rollCallStatus-total').innerHTML = total;
 
@@ -490,7 +559,7 @@ function calcRollCallStatus() {
 }
 
 // Mark all absent
-function rollCallAbsent() {
+function RollCallAbsent() {
 	// Remove formatting of the other button
 	$('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-2');
 	$('.rollCallListItem-Button2-Text').removeClass('rollCallListItem-Button2-selected');
@@ -506,7 +575,7 @@ function rollCallAbsent() {
 			tempDelegate = event.target.result;
 			tempDelegate.session0.attendance = 0;	// Mark as absent
 			db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-				calcRollCallStatus();
+				CalcRollCallStatus();
 			}
 		};
 	}
@@ -515,11 +584,11 @@ function rollCallAbsent() {
 	currentList.length = 0;
 
 	// Bind the modified array for the autocomplete
-	autocompleteSources();
+	AutocompleteSources();
 }
 
 // Mark all present
-function rollCallPresent() {
+function RollCallPresent() {
 	// Remove formatting of the other button
 	$('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
 	$('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
@@ -535,7 +604,7 @@ function rollCallPresent() {
 			tempDelegate = event.target.result;
 			tempDelegate.session0.attendance = 1;	// Mark as present
 			db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-				calcRollCallStatus();
+				CalcRollCallStatus();
 			}
 		};
 	}
@@ -549,11 +618,11 @@ function rollCallPresent() {
 	}
 
 	// Bind the modified array for the autocomplete
-	autocompleteSources();
+	AutocompleteSources();
 }
 
 // Mark all present
-function rollCallPresentAndVoting() {
+function RollCallPresentAndVoting() {
 	// Remove formatting of the other button
 	$('.rollCallListItem-Text').removeClass('rollCallListItem-Text-selected-1');
 	$('.rollCallListItem-Button1-Text').removeClass('rollCallListItem-Button1-selected');
@@ -569,7 +638,7 @@ function rollCallPresentAndVoting() {
 			tempDelegate = event.target.result;
 			tempDelegate.session0.attendance = 2;	// Mark as present and voting
 			db.transaction("Delegates" ,"readwrite").objectStore("Delegates").put(tempDelegate).onsuccess = function(event) {	// Update the database
-				calcRollCallStatus();
+				CalcRollCallStatus();
 			}
 		};
 	}
@@ -583,12 +652,14 @@ function rollCallPresentAndVoting() {
 	}
 
 	// Bind the modified array for the autocomplete
-	autocompleteSources();
+	AutocompleteSources();
 }
 
-/*--------------------------------------------------
-						Voting
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        			Voting Section
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 var votingYes, votingNo, votingAbstain;	// for counting
 
 function startVoting() {
@@ -826,11 +897,15 @@ function Calculate_votingSerialNumber() {
 }
 
 
-/*--------------------------------------------------
-			General Speakers List (GSL)
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                       General Speakers List (GSL) Section
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 
 var gslArray = [], gslSelectionArray = [], previousSpeaker;
+var gslSpeakerMins = 0, gslSpeakerSecs = 0, gslSpeakerSetMins = 0, gslSpeakerSetSecs = 0, gslSpeakerTimeTotal = 0;
+var gslSpeakerControl, yieldToDelegate = false;
 
 // Add the speaker to GSL
 function GSLAddSpeaker() {
@@ -981,11 +1056,6 @@ function bindGSLRemoveButton() {
 
 	});
 }
-
-
-
-var gslSpeakerMins = 0, gslSpeakerSecs = 0, gslSpeakerSetMins = 0, gslSpeakerSetSecs = 0, gslSpeakerTimeTotal = 0;
-var gslSpeakerControl, yieldToDelegate = false;;
 
 function gslSpeakerStart() {
 	if (document.getElementById('gslButtonLabel-start').innerHTML == "Start") {
@@ -1385,7 +1455,6 @@ function yieldComment() {
 			}
 		}
 	}
-
 }
 
 function gslSpeakerSetProgress() {
@@ -1414,9 +1483,11 @@ function gslSpeakerSetProgress() {
 }
 
 
-/*--------------------------------------------------
-					Moderated Caucus
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        	Moderated Caucus Section
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 var modMins=0, modSecs=0, modControl, modTimeTotal, modSpeakerMins=0, modSpeakerSecs=0, modSpeakerControl, modSpeakerTimeTotal, modSpeakerSetMins=0, modSpeakerSetSecs=0;
 var modRunningStatus = false, modSpeakerRunningStatus = false;
 
@@ -1875,9 +1946,11 @@ function modSetSpeakerProgress() {
 }
 
 
-/*--------------------------------------------------
-				Unmoderated Caucus
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                       		Unmoderated Caucus Sectiom
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 var unmodMins, unmodSecs, unmodTimeTotal, unmodControl, unmodProgress;
 function UnmodTimer() {
 	if (document.getElementById("unmodButton-startCaucus").innerHTML == "Stop Unmoderated Caucus") {
@@ -2083,10 +2156,11 @@ function unmodSetProgress() {
 }
 
 
-/*--------------------------------------------------
-					Resolution
---------------------------------------------------*/
-
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+								Resolution Section
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -2137,9 +2211,11 @@ var tempDelegate = new Delegate('temp');
 var DelegateArray = new Array();
 
 
-/*--------------------------------------------------
-				IndexedDB Database
---------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                      	IndexedDB Database Things
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
 
 if (!window.indexedDB) {
     alert("Your browser doesn't support IndexedDB. MUN Moderator requires IndexedDB and cannot function without it. Please use a supported browser like Google Chrome, Mozilla Firefox or Microsoft Edge. InPrivate Mode on Edge disables IndexedDB.");
@@ -2185,7 +2261,7 @@ dbOpenRequest.onsuccess = function() {
 		.done(function(response){
 			eval(response);
 
-			autocompleteSources();	// To bind the sources for autocomplete
+			AutocompleteSources();	// To bind the sources for autocomplete
 			// Load flags
 			db.transaction("Delegates").objectStore("Delegates").openCursor().onsuccess = function(event) {
 				var cursor = event.target.result;
@@ -2223,7 +2299,7 @@ dbOpenRequest.onsuccess = function() {
 				}
 				else {
 					bindRollCallButtons();
-					calcRollCallStatus();
+					CalcRollCallStatus();
 				}
 			};
 
@@ -2232,7 +2308,12 @@ dbOpenRequest.onsuccess = function() {
 };
 
 
-// For logging events to indexedDB
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        			Logging evnts to DB
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+
 // function logEvents(categoryArgs, stringArgs) {
 // 	var store = db.transaction("Log", "readwrite").objectStore("Log");
 // 	var item = { category: categoryArgs, date: Date(), string: stringArgs};
@@ -2380,6 +2461,13 @@ dbOpenRequest.onsuccess = function() {
 // 	};
 // }
 
+
+////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------
+                        			Flags
+------------------------------------------------------------------------------*/
+////////////////////////////////////////////////////////////////////////////////
+
 /*--------------------------------------------------
 				Load Flags from server
 --------------------------------------------------*/
@@ -2423,7 +2511,6 @@ function LoadFlag(flagName){
 		}
 	}
 }
-
 
 /*--------------------------------------------------
 					Showing Flags
@@ -2610,47 +2697,11 @@ function gslFlagLoad(portfolio){
 }
 
 
-/*--------------------------------------------------
-				Connectivity Status
---------------------------------------------------*/
-var connectivityErrors = 0;	// Ensures that just a single error on a good connection does not show 'No Internet'; Requires two consecutive errors
-$(document).ready(function(){
-	setInterval(function(){
-		var myData="0";
-		request = $.ajax({
-			url: "connectivity.php",
-			type: "post",
-			data: myData
-		});
-		// Internet connected, server accessible
-		request.done(function (response, textStatus, jqXHR){
-			connectivityErrors = 0;	// Reset counter
-			if (response == "1"){	// Everything OK
-				$("#status-icon").css("color", "#006600");	// Green
-				$("#status-text").html(" OK");
-			}
-			else if (response == "0"){	// SQL Error
-				$("#status-icon").css("color", "#FF0000");	// Red
-				$("#status-text").html(" SQL Error");
-			}
-			else {	// PHP Error
-				$("#status-icon").css("color", "#FF0000");	// 	Red
-				$("#status-text").html(" PHP Error");
-			}
-		});
 
-		// Not connected to internet or server down
-		request.fail(function (jqXHR, textStatus, errorThrown){
-			if (connectivityErrors > 1){
-				$("#status-icon").css("color", "#FFCC00");	// Yellow
-				$("#status-text").html(" No Internet");
-			}
-			connectivityErrors++;	// Increment counter
-		});
-	}, 7000);	// Check every 7 seconds
-});
 
-// Image blob testing (original & edited code which works; copied from somewhere)
+// Image blob testing 
+// Original & edited code which works
+// Source: https://hacks.mozilla.org/2012/02/storing-images-and-files-in-indexeddb/
 
 // $(document).ready(function() {
 // 	setTimeout(function(){

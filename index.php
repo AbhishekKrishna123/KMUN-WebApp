@@ -24,7 +24,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 		<!-- <link rel="stylesheet" href="munmod.css"> -->
 		<link rel="stylesheet/less" type="text/css" href="munmod.less" />
 		<!-- For processing the less file -->
-		<script src="less.min.js" type="text/javascript"></script>
+		<script src="./external/js/less.min.js" type="text/javascript"></script>
 
 
 		<!-- Favicons: From realfavicongenerator.net -->
@@ -108,7 +108,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 						<a href="#" class="pure-menu-heading">MUN Moderator 2016</a>
 					</div>
 					<!-- Navigation Panel -->
-					<ul class="pure-menu-list">
+					<div class="pure-menu-list">
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-RollCall"><a href="#" class="pure-menu-link">Roll Call</a></li>
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-voting"><a href="#" class="pure-menu-link">Voting</a></li>
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-gsl"><a href="#" class="pure-menu-link">General Speakers List</a></li>
@@ -116,18 +116,17 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-mod"><a href="#" class="pure-menu-link">Moderated Caucus</a></li>
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-unmod"><a href="#" class="pure-menu-link">Unmoderated Caucus</a></li>
 						<li class="pure-menu-item main-navigation waves-effect waves-light" id="button-resolution"><a href="#" class="pure-menu-link">Resolution</a></li>
-						
 
 						<!-- <li class="pure-menu-item other-nav-items menu-item-divided" id="button-about"><a href="#" class="pure-menu-link"><i class="material-icons">info_outline</i> About</a></li>
 						<li class="pure-menu-item other-nav-items" id="button-help"><a href="#" class="pure-menu-link"><i class="material-icons">help_outline</i> Help</a></li>
 						<li class="pure-menu-item other-nav-items" id="button-settings"><a href="#" class="pure-menu-link"><i class="material-icons">settings</i> Settings</a></li>
 						<li class="pure-menu-item menu-item-divided ExternalWebsite"><a class="pure-menu-link" href="http://kmun.in" target="_blank"><i class="material-icons">link</i> KMUN Website</a></li>
 						<li class="pure-menu-item ExternalWebsite"><a class="pure-menu-link" href="#">Insert sponsor logo</a></li> -->
-					</ul>
+					</div>
 				</div>
 			</div>
 
-			<div id="main">
+			<main id="main">
 				<div id="top-bar" class="z-depth-2">
 					<div id="status-bar">Connectivity <a id="status-icon"><i class="fa fa-circle"></i><span id="status-text"></span></a></div>
 					<div id="committeeName">Committee Name</div>
@@ -143,7 +142,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 							<option value="session7">Session 7</option>
 							<option value="session8">Session 8</option>
 						</select>
-  					</div>
+					</div>
 				</div>
 				
 				<!-- Agenda -->
@@ -186,9 +185,9 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 						</div>
 					</div>
 
-					<a class="waves-effect waves-gold btn-flat" onclick="rollCallAbsent()">Absent</a>
-					<a class="waves-effect waves-gold btn-flat" onclick="rollCallPresent()">Present</a>
-					<a class="waves-effect waves-gold btn-flat" onclick="rollCallPresentAndVoting()">Present & Voting</a>
+					<a class="waves-effect waves-gold btn-flat" onclick="RollCallAbsent()">Absent</a>
+					<a class="waves-effect waves-gold btn-flat" onclick="RollCallPresent()">Present</a>
+					<a class="waves-effect waves-gold btn-flat" onclick="RollCallPresentAndVoting()">Present & Voting</a>
 
 					<div class="rollCallList container" id="list-rollCall"></div>
 				</div>
@@ -290,7 +289,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 
 							<div class="label" style="margin-top: 1em;">List of Speakers</div>
 
-							<div  id="GSLList" style="margin-top: 1em;">
+							<div id="GSLList" style="margin-top: 1em;">
 								<!-- Stuff gets inserted here -->
 							</div>
 						</div>
@@ -376,16 +375,16 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 					</div>
 					
 					<div class="row">
-						<div class="col s3">
+						<div class="col s2">
 							<div class="flag" id="modFlag-speaker"></div>
 						</div>
-						<div  class="col s5">
+						<div class="col s5">
 							<div class="input-field">
 								<input id="modAutocomplete-speaker" type="text" onblur="modSpeakerTimer()" disabled="true" placeholder="">
 								<label for="modAutocomplete-speaker">Current&nbsp;speaker</label>
 							</div>
 						</div>
-						<div class="col s4">
+						<div class="col s5">
 							<a class="waves-effect waves-gold btn-flat mod-control-buttons hidden" onclick="modSpeakerPause()">
 								<span id="modButtonLabel-speakerPause">Pause</span>
 							</a>
@@ -426,13 +425,13 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 							<div class="row">
 								<div class="col s5 offset-s1">
 									<div class="input-field">
-										<input id="modField-caucusMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+										<input id="modField-caucusMinutes" type="number" min="0" value="0" onkeypress="return isNumberKey(event)">
 										<label for="modField-caucusMinutes">Minutes</label>
 									</div>
 								</div>
 								<div class="col s5">
 									<div class="input-field">
-										<input id="modField-caucusSeconds" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+										<input id="modField-caucusSeconds" type="number" min="0" value="0" onkeypress="return isNumberKey(event)">
 										<label for="modField-caucusSeconds">Seconds</label>
 									</div>
 								</div>
@@ -448,13 +447,13 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 					<div class="row">
 						<div class="col s2 offset-s4">
 							<div class="input-field">
-								<input id="modField-setSpeakerMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<input id="modField-setSpeakerMinutes" type="number" min="0" value="0" onkeypress="return isNumberKey(event)">
 								<label for="modField-setSpeakerMinutes">Minutes</label>
 							</div>
 						</div>
 						<div class="col s2">
 							<div class="input-field">
-								<input id="modField-setSpeakerSeconds" type="number" min="0" value="10"  onkeypress="return isNumberKey(event)">
+								<input id="modField-setSpeakerSeconds" type="number" min="0" value="10" onkeypress="return isNumberKey(event)">
 								<label for="modField-setSpeakerSeconds">Seconds</label>
 							</div>
 						</div>
@@ -501,7 +500,6 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 						</div>
 						<div class="col s12 m6">
 							<div class="input-field">
-								<span>
 									<input type="text" id="unmodAutocomplete-start" placeholder="">
 								<label for="unmodAutocomplete-start">Caucus&nbsp;started&nbsp;by</label>
 							</div>
@@ -513,13 +511,13 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 					<div class="row">
 						<div class="col s2 offset-s4">
 							<div class="input-field centerText">
-								<input id="unmodField-caucusMinutes" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<input id="unmodField-caucusMinutes" type="number" min="0" value="0" onkeypress="return isNumberKey(event)">
 								<label for="unmodField-caucusMinutes">Minutes</label>
 							</div>
 						</div>
 						<div class="col s2">
 							<div class="input-field centerText">
-								<input id="unmodField-caucusSeconds" type="number" min="0" value="0"  onkeypress="return isNumberKey(event)">
+								<input id="unmodField-caucusSeconds" type="number" min="0" value="0" onkeypress="return isNumberKey(event)">
 								<label for="unmodField-caucusSeconds">Seconds</label>
 							</div>
 						</div>
@@ -533,13 +531,13 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 						<div class="col s12 centerText">
 
 							<div class="col s12 centerText">
-								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodPause()">
+								<a class="waves-effect waves-gold btn-flat unmod-control-buttons hidden" onclick="unmodPause()">
 									<span id="unmodButton-pauseCaucus">Pause</span>
 								</a>
-								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodExtendMin()">
+								<a class="waves-effect waves-gold btn-flat unmod-control-buttons hidden" onclick="unmodExtendMin()">
 									<span>+1 min</span>
 								</a>
-								<a class="waves-effect waves-gold btn-flat  unmod-control-buttons hidden" onclick="unmodExtendSec()">
+								<a class="waves-effect waves-gold btn-flat unmod-control-buttons hidden" onclick="unmodExtendSec()">
 									<span>+10 sec</span>
 								</a>
 							</div>
@@ -576,7 +574,7 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 					<a class="waves-effect waves-light btn blue">Stop Vote</a>
 				</div>
 
-			</div>
+			</main>
 		</div>	<!-- End of layout -->
 
 
@@ -584,15 +582,15 @@ Developed by KMUN Tech Team for Kumarans Model United Nations <kmun.in>
 		<!-- jQuery -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<!-- jQuery UI -->
-		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 		<!-- jQuery UI Touch Punch (For enabling touch events support for jQuery UI) -->
-		<script src="jquery.ui.touch-punch.min.js"></script>
+		<script src="./external/js/jquery.ui.touch-punch.min.js"></script>
 		<!-- Materialize -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
 		<!-- CanvasJS -->
 		<script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
 		<!-- jQuery Autocomplete Plugin from https://github.com/devbridge/jQuery-Autocomplete -->
-		<script src="jquery.autocomplete.min.js"></script>
+		<script src="./external/js/jquery.autocomplete.min.js"></script>
 		<!-- Custom JS -->
 		<script src="munmod.js"></script>
 		
